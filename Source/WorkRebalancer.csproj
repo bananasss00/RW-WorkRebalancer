@@ -82,6 +82,7 @@
     <Compile Include="IWorkAmount\RecipeWorkAmount.cs" />
     <Compile Include="IWorkAmount\IWorkAmount.cs" />
     <Compile Include="Loger.cs" />
+    <Compile Include="Patches\JobDriver_MineQuarry_Patch.cs" />
     <Compile Include="Patches\RF_Drill_Patch.cs" />
     <Compile Include="Patches\HSK_CollectJobs_Patch.cs" />
     <Compile Include="Patches\JobDriver_Repair.cs" />

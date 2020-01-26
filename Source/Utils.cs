@@ -15,9 +15,12 @@ namespace WorkRebalancer
             {
                 foreach (var thing in map.listerThings.AllThings)
                 {
-                    if (thing.HostileTo(Faction.OfPlayer))
+                    if (thing.HostileTo(Faction.OfPlayer) && thing.def.building == null) // skip hostile buildings
                     {
-                        //Log.Warning($"Hostile detected!");
+                        if (WorkRebalancerMod.Instance.DebugLog)
+                        {
+                            Log.Message($"Hostile detected: {thing.LabelCap}");
+                        }
                         return true;
                     }
                 }

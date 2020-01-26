@@ -30,9 +30,10 @@ namespace WorkRebalancer
 
             HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
-            Log.Warning($"Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
-            Log.Warning($"Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
-            Log.Warning($"Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
         }
 
         public override string ModIdentifier => "WorkRebalancer";
@@ -45,7 +46,7 @@ namespace WorkRebalancer
                 return;
 
             // check every 7 sec
-            if ((currentTick % 420) != 0)
+            if ((currentTick % CheckHostileDelay.Value) != 0)
                 return;
 
             // if option off reset to config
@@ -64,13 +65,19 @@ namespace WorkRebalancer
             {
                 ApplySettings();
                 HostileDetected = false;
-                Log.Warning($"[WorkRebalancer] Apply configured settings");
+                if (DebugLog)
+                {
+                    Log.Message($"[WorkRebalancer] Apply configured settings");
+                }
             }
             else if (!HostileDetected && hostileDetected) // detected new hostiles
             {
                 ApplySettingsDefaults();
                 HostileDetected = true;
-                Log.Warning($"[WorkRebalancer] Apply default settings");
+                if (DebugLog)
+                {
+                    Log.Message($"[WorkRebalancer] Apply default 100% settings");
+                }
             }
         }
 
@@ -98,6 +105,11 @@ namespace WorkRebalancer
                 "RestoreWhenHostileDetected",
                 "Restore all workAmount when hostile detected on any map",
                 true);
+            CheckHostileDelay = modSettingsPack.GetHandle(
+                "CheckHostileDelay",
+                "CheckHostileDelay",
+                "Check hostile delay in ticks. Default 420 ticks ~= 7 seconds",
+                420);
             PercentOfBaseResearches = modSettingsPack.GetHandle(
                 "PercentOfBaseResearches",
                 "PercentOfBaseResearches",
@@ -153,9 +165,9 @@ namespace WorkRebalancer
                 PercentOfBaseHSKCollectJobs = modSettingsPack.GetHandle(
                     "PercentOfBaseHSKCollectJobs",
                     "PercentOfBaseHSKCollectJobs",
-                    "HSK Collect Jobs: Peat, Clay, Sand",
+                    "HSK Collect Jobs: Peat, Clay, Sand, Crushedstone",
                     100,
-                    value => int.TryParse(value, out int num) && num >= 1 && num <= 1000);
+                    value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
             }
 
             if (RFDrillJobPatched)
@@ -167,6 +179,20 @@ namespace WorkRebalancer
                     1f,
                     value => float.TryParse(value, out float num) && num >= 1f && num <= 1000f);
             }
+            if (HSKMineQuarryPatched)
+            {
+                PercentOfBaseHSKMineQuarry = modSettingsPack.GetHandle(
+                    "PercentOfBaseHSKMineQuarry",
+                    "PercentOfBaseHSKMineQuarry",
+                    "HSK Quarry mine. Default = 100",
+                    100,
+                    value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            }
+            DebugLog = modSettingsPack.GetHandle(
+                "DebugLog",
+                "DebugLog",
+                "DebugLog",
+                false);
 
 
             SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "Rebalance", "RebalanceDesc", false);
@@ -184,6 +210,8 @@ namespace WorkRebalancer
             {
                 if (Widgets.ButtonText(rect, "Reset"))
                 {
+                    RestoreWhenHostileDetected.ResetToDefault();
+                    CheckHostileDelay.ResetToDefault();
                     PercentOfBaseResearches.ResetToDefault();
                     PercentOfBaseTerrains.ResetToDefault();
                     PercentOfBaseRecipes.ResetToDefault();
@@ -194,6 +222,7 @@ namespace WorkRebalancer
                     RepairJobAddX.ResetToDefault();
                     PercentOfBaseHSKCollectJobs.ResetToDefault();
                     RFDrillJobMultiplier.ResetToDefault();
+                    PercentOfBaseHSKMineQuarry.ResetToDefault();
                     
                     //PercentOfBaseResearches.StringValue = 100.ToString();
                     //PercentOfBaseTerrains.StringValue = 100.ToString();
@@ -307,6 +336,7 @@ namespace WorkRebalancer
         }
 
         public SettingHandle<bool> RestoreWhenHostileDetected;
+        public SettingHandle<int> CheckHostileDelay;
         public SettingHandle<int> PercentOfBaseResearches;
         public SettingHandle<int> PercentOfBaseTerrains;
         public SettingHandle<int> PercentOfBaseRecipes;
@@ -317,9 +347,12 @@ namespace WorkRebalancer
         public SettingHandle<int> RepairJobAddX;
         public SettingHandle<int> PercentOfBaseHSKCollectJobs;
         public SettingHandle<float> RFDrillJobMultiplier;
+        public SettingHandle<int> PercentOfBaseHSKMineQuarry;
+        public SettingHandle<bool> DebugLog;
 
         public bool HSKCollectJobsPatched = false;
         public bool RFDrillJobPatched = false;
+        public bool HSKMineQuarryPatched = false;
         public bool HostileDetected = false;
     }
 }

@@ -16,16 +16,19 @@ namespace WorkRebalancer.Patches
             Type JobDriver_CollectSand_Type = AccessTools.TypeByName("SK.JobDriver_CollectSand");
             Type JobDriver_CollectClay_Type = AccessTools.TypeByName("SK.JobDriver_CollectClay");
             Type JobDriver_CollectPeat_Type = AccessTools.TypeByName("SK.JobDriver_CollectPeat");
-            if (JobDriver_CollectSand_Type != null && JobDriver_CollectPeat_Type != null && JobDriver_CollectClay_Type != null)
+            Type JobDriver_CollectCrushedstone_Type = AccessTools.TypeByName("SK.JobDriver_CollectCrushedstone");
+            if (JobDriver_CollectSand_Type != null && JobDriver_CollectPeat_Type != null && JobDriver_CollectClay_Type != null && JobDriver_CollectCrushedstone_Type != null)
             {
                 var CollectSand = AccessTools.Method(JobDriver_CollectSand_Type, "CollectSand");
                 var CollectPeat = AccessTools.Method(JobDriver_CollectPeat_Type, "CollectPeat");
                 var CollectClay = AccessTools.Method(JobDriver_CollectClay_Type, "CollectClay");
-                if (CollectSand != null && CollectPeat != null && CollectClay != null)
+                var CrushedStone = AccessTools.Method(JobDriver_CollectCrushedstone_Type, "CrushedStone");
+                if (CollectSand != null && CollectPeat != null && CollectClay != null && CrushedStone != null)
                 {
                     h.Patch(CollectSand, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
                     h.Patch(CollectPeat, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
                     h.Patch(CollectClay, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
+                    h.Patch(CrushedStone, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
                     return true;
                 }
             }
