@@ -19,6 +19,7 @@ namespace WorkRebalancer
             }
         }
 
+        private float? uninstallWork;
         private float? workToBuildStat;
         private float? workToMakeStat;
         private float? workToBuildFactor;
@@ -51,6 +52,7 @@ namespace WorkRebalancer
         public ThingWorkAmount(ThingDef def)
         {
             Ref = def;
+            uninstallWork = def.building?.uninstallWork;
             workToBuildStat = def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild)?.value;
             workToMakeStat = def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake)?.value;
             workToBuildFactor = def.stuffProps?.statFactors?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild)?.value;
@@ -59,11 +61,12 @@ namespace WorkRebalancer
 
         public object Ref { get; set; }
 
-        public bool HasWorkValue() => workToBuildStat != null || workToMakeStat != null || workToBuildFactor != null || workToMakeFactor != null;
+        public bool HasWorkValue() => uninstallWork != null || workToBuildStat != null || workToMakeStat != null || workToBuildFactor != null || workToMakeFactor != null;
 
         public void Restore()
         {
             ThingDef def = (ThingDef) Ref;
+            if (uninstallWork != null) def.building.uninstallWork = (float)uninstallWork;
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildStat);
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake), workToMakeStat);
             SetMod(def.stuffProps?.statFactors?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildFactor);
@@ -73,6 +76,7 @@ namespace WorkRebalancer
         public void Set(float percentOfBaseValue)
         {
             ThingDef def = (ThingDef) Ref;
+            if (uninstallWork != null) def.building.uninstallWork = (float)uninstallWork * percentOfBaseValue;
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildStat, percentOfBaseValue);
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake), workToMakeStat, percentOfBaseValue);
             SetMod(def.stuffProps?.statFactors?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildFactor, percentOfBaseValue);
@@ -82,6 +86,7 @@ namespace WorkRebalancer
         public void SetStats(float percentOfBaseValue)
         {
             ThingDef def = (ThingDef) Ref;
+            if (uninstallWork != null) def.building.uninstallWork = (float)uninstallWork * percentOfBaseValue;
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildStat, percentOfBaseValue);
             SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake), workToMakeStat, percentOfBaseValue);
         }
