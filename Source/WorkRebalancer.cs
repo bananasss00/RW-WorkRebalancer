@@ -12,6 +12,7 @@ using HugsLib.Settings;
 using Verse;
 using RimWorld;
 using UnityEngine;
+using WorkRebalancer.Patches;
 
 namespace WorkRebalancer
 {
@@ -26,10 +27,52 @@ namespace WorkRebalancer
         {
             Instance = this;
             workDefDatabase = new List<IWorkAmount>();
-            HarmonyInstance.Create("pirateby.WorkRebalancerMod").PatchAll(Assembly.GetExecutingAssembly());
+
+            HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
+            h.PatchAll(Assembly.GetExecutingAssembly());
+            Log.Warning($"Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
+            Log.Warning($"Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
+            Log.Warning($"Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
         }
 
         public override string ModIdentifier => "WorkRebalancer";
+
+        public override void Tick(int currentTick)
+        {
+            base.Tick(currentTick);
+
+            if (Current.ProgramState != ProgramState.Playing)
+                return;
+
+            // check every 7 sec
+            if ((currentTick % 420) != 0)
+                return;
+
+            // if option off reset to config
+            if (!RestoreWhenHostileDetected.Value)
+            {
+                if (HostileDetected)
+                {
+                    ApplySettings();
+                    HostileDetected = false;
+                }
+                return;
+            }
+
+            bool hostileDetected = Utils.HostileExistsOnMaps();
+            if (HostileDetected && !hostileDetected) // detected hostiles rip
+            {
+                ApplySettings();
+                HostileDetected = false;
+                Log.Warning($"[WorkRebalancer] Apply configured settings");
+            }
+            else if (!HostileDetected && hostileDetected) // detected new hostiles
+            {
+                ApplySettingsDefaults();
+                HostileDetected = true;
+                Log.Warning($"[WorkRebalancer] Apply default settings");
+            }
+        }
 
         public override void DefsLoaded()
         {
@@ -49,6 +92,12 @@ namespace WorkRebalancer
         public void InitializeSettings()
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
+
+            RestoreWhenHostileDetected = modSettingsPack.GetHandle(
+                "RestoreWhenHostileDetected",
+                "RestoreWhenHostileDetected",
+                "Restore all workAmount when hostile detected on any map",
+                true);
             PercentOfBaseResearches = modSettingsPack.GetHandle(
                 "PercentOfBaseResearches",
                 "PercentOfBaseResearches",
@@ -93,6 +142,32 @@ namespace WorkRebalancer
                 "Rebalance all workAmount for recipes, buildings, researches",
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            RepairJobAddX = modSettingsPack.GetHandle(
+                "RepairJobAddX",
+                "RepairJobAddX",
+                "Add hitpoints when repair buildings. Default = 1",
+                1,
+                value => int.TryParse(value, out int num) && num >= 1 && num <= 1000);
+            if (HSKCollectJobsPatched)
+            {
+                PercentOfBaseHSKCollectJobs = modSettingsPack.GetHandle(
+                    "PercentOfBaseHSKCollectJobs",
+                    "PercentOfBaseHSKCollectJobs",
+                    "HSK Collect Jobs: Peat, Clay, Sand",
+                    100,
+                    value => int.TryParse(value, out int num) && num >= 1 && num <= 1000);
+            }
+
+            if (RFDrillJobPatched)
+            {
+                RFDrillJobMultiplier = modSettingsPack.GetHandle(
+                    "RFDrillJobMultiplier",
+                    "RFDrillJobMultiplier",
+                    "Rimfeller Drill Job Multiplier. Default = 1",
+                    1f,
+                    value => float.TryParse(value, out float num) && num >= 1f && num <= 1000f);
+            }
+
 
             SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "Rebalance", "RebalanceDesc", false);
             handleRebalance.CustomDrawer = rect =>
@@ -116,6 +191,9 @@ namespace WorkRebalancer
                     PercentOfBaseThingFactors.ResetToDefault();
                     PercentOfBasePlantsWork.ResetToDefault();
                     PercentOfBasePlantsGrowDays.ResetToDefault();
+                    RepairJobAddX.ResetToDefault();
+                    PercentOfBaseHSKCollectJobs.ResetToDefault();
+                    RFDrillJobMultiplier.ResetToDefault();
                     
                     //PercentOfBaseResearches.StringValue = 100.ToString();
                     //PercentOfBaseTerrains.StringValue = 100.ToString();
@@ -139,7 +217,10 @@ namespace WorkRebalancer
 
         public void ApplySettings()
         {
-            Loger.Clear();
+            //if (RestoreWhenHostileDetected.Value && HostileDetected)
+            //    return;
+
+            //Loger.Clear();
             float percent;
 
             percent = PercentOfBaseResearches.Value / 100f;
@@ -183,9 +264,49 @@ namespace WorkRebalancer
             {
                 w.Set(percent);
             }
-            Loger.Save("dumpRebuilder.txt");
+            //Loger.Save("dumpRebuilder.txt");
         }
 
+        // hostile detected
+        public void ApplySettingsDefaults()
+        {
+            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
+            {
+                w.Set(1f);
+            }
+                    
+            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
+            {
+                w.Set(1f);
+            }
+                    
+            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
+            {
+                w.Set(1f);
+            }
+                    
+            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
+            {
+                w.SetStats(1f);
+            }
+                    
+            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
+            {
+                w.SetFactors(1f);
+            }
+
+            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
+            {
+                w.Set(1f);
+            }
+
+            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
+            {
+                w.Set(1f);
+            }
+        }
+
+        public SettingHandle<bool> RestoreWhenHostileDetected;
         public SettingHandle<int> PercentOfBaseResearches;
         public SettingHandle<int> PercentOfBaseTerrains;
         public SettingHandle<int> PercentOfBaseRecipes;
@@ -193,5 +314,12 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBaseThingFactors;
         public SettingHandle<int> PercentOfBasePlantsWork;
         public SettingHandle<int> PercentOfBasePlantsGrowDays;
+        public SettingHandle<int> RepairJobAddX;
+        public SettingHandle<int> PercentOfBaseHSKCollectJobs;
+        public SettingHandle<float> RFDrillJobMultiplier;
+
+        public bool HSKCollectJobsPatched = false;
+        public bool RFDrillJobPatched = false;
+        public bool HostileDetected = false;
     }
 }
