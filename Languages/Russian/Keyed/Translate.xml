@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<!-- Настройки -->
+	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
+	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>
+	<ResetBtn>СБРОСИТЬ ВСЕ</ResetBtn>
+	<ResetBtnDesc>Сбросить все настройки работ на их первоначальные значения</ResetBtnDesc>
+	
+	<RestoreWhenHostileDetected>Восстанавливать настройки при угрозе</RestoreWhenHostileDetected>
+	<RestoreWhenHostileDetectedDesc>Восстанавливать стандартные настройки работ при обнаружении угроз</RestoreWhenHostileDetectedDesc>
+	<CheckHostileDelay>Задержка между проверками на угрозы в тиках</CheckHostileDelay>
+	<CheckHostileDelayDesc>Задержка между проверками на угрозы в тиках. 420 тиков ~= 7 секунд на 1й скорости</CheckHostileDelayDesc>
+	<PercentOfBaseResearches>Исследования в %</PercentOfBaseResearches>
+	<PercentOfBaseResearchesDesc>Процент от базового значения для исследований</PercentOfBaseResearchesDesc>
+	<PercentOfBaseTerrains>Покрытия(полы) в %</PercentOfBaseTerrains>
+	<PercentOfBaseTerrainsDesc>Процент от базового значения количества работы для покрытий(полов)</PercentOfBaseTerrainsDesc>
+	<PercentOfBaseRecipes>Рецепты в %</PercentOfBaseRecipes>
+	<PercentOfBaseRecipesDesc>Процент от базового значения количества работы для изготовления рецепта</PercentOfBaseRecipesDesc>
+	<PercentOfBaseThingStats>Строительство в %</PercentOfBaseThingStats>
+	<PercentOfBaseThingStatsDesc>Процент от базового значения количества работы для постройки</PercentOfBaseThingStatsDesc>
+	<PercentOfBaseThingFactors>Материалы в %</PercentOfBaseThingFactors>
+	<PercentOfBaseThingFactorsDesc>Материалы добавляют дополнительное количество работы для построек или рецептов. Процент от базового значения количества работы</PercentOfBaseThingFactorsDesc>
+	<PercentOfBasePlantsWork>Фермерство в %</PercentOfBasePlantsWork>
+	<PercentOfBasePlantsWorkDesc>Процент от базового значения количества работы для работы с растениями</PercentOfBasePlantsWorkDesc>
+	<PercentOfBasePlantsGrowDays>Скорость роста растений в %</PercentOfBasePlantsGrowDays>
+	<PercentOfBasePlantsGrowDaysDesc>Процент от базового значения скорости роста для растения</PercentOfBasePlantsGrowDaysDesc>
+	
+	<!-- Патчи работ -->
+	<RepairJobAddX>Работа: Ремонт построек (кол-во HP за тик)</RepairJobAddX>
+	<RepairJobAddXDesc>Сколько добавляет HP постройке за 1 тик ремонта. По умолчанию 1 HP</RepairJobAddXDesc>
+	<PercentOfBaseHSKCollectJobs>[HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина) в %</PercentOfBaseHSKCollectJobs>
+	<PercentOfBaseHSKCollectJobsDesc>Процент от базового значения количества работы для сбора песка, торфа, щебня, глины</PercentOfBaseHSKCollectJobsDesc>
+	<RFDrillJobMultiplier>[Rimfeller] Работа: Бурение скважины(Множитель бурения за тик)</RFDrillJobMultiplier>
+	<RFDrillJobMultiplierDesc>Множитель на базовое значение выполненого бурения за 1 тик</RFDrillJobMultiplierDesc>
+	<PercentOfBaseHSKMineQuarry>[HSK-Quarry] Работа в карьере в %</PercentOfBaseHSKMineQuarry>
+	<PercentOfBaseHSKMineQuarryDesc>Процент от базового значения количества работы для работы в карьере</PercentOfBaseHSKMineQuarryDesc>
+
+</LanguageData>

@@ -29,11 +29,11 @@ namespace WorkRebalancer.Patches
 
         public static bool MakeNewToilsPrefix(object __instance, ref IEnumerable<Toil> __result)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected.Value &&
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return true;
 
-            __result = MakeNewToils(__instance, WorkRebalancerMod.Instance.RFDrillJobMultiplier.Value);
+            __result = MakeNewToils(__instance, WorkRebalancerMod.Instance.RFDrillJobMultiplier);
             return false;
         }
 

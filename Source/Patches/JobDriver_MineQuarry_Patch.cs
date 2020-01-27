@@ -28,11 +28,11 @@ namespace WorkRebalancer.Patches
 
         public static void MinePostfix(ref Toil __result)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected.Value &&
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            float percentOfBase = WorkRebalancerMod.Instance.PercentOfBaseHSKMineQuarry.Value / 100f;
+            float percentOfBase = WorkRebalancerMod.Instance.PercentOfBaseHSKMineQuarry / 100f;
             __result.defaultDuration = (int)(__result.defaultDuration * percentOfBase);
         }
     }

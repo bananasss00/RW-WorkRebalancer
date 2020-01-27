@@ -18,10 +18,10 @@ namespace WorkRebalancer
 {
     public class WorkRebalancerMod : ModBase
     {
+        public static WorkRebalancerMod Instance { get; private set; }
+
         private List<IWorkAmount> workDefDatabase;
         private ModSettingsPack modSettingsPack;
-
-        public static WorkRebalancerMod Instance { get; private set; }
 
         public WorkRebalancerMod()
         {
@@ -31,6 +31,7 @@ namespace WorkRebalancer
             HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
+            //Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
@@ -46,11 +47,11 @@ namespace WorkRebalancer
                 return;
 
             // check every 7 sec
-            if ((currentTick % CheckHostileDelay.Value) != 0)
+            if ((currentTick % CheckHostileDelay) != 0)
                 return;
 
             // if option off reset to config
-            if (!RestoreWhenHostileDetected.Value)
+            if (!RestoreWhenHostileDetected)
             {
                 if (HostileDetected)
                 {
@@ -83,6 +84,7 @@ namespace WorkRebalancer
 
         public override void DefsLoaded()
         {
+            workDefDatabase.Clear();
             workDefDatabase.AddRange(RecipeWorkAmount.GetAll());
             workDefDatabase.AddRange(ThingWorkAmount.GetAll());
             workDefDatabase.AddRange(TerrainWorkAmount.GetAll());
@@ -100,82 +102,138 @@ namespace WorkRebalancer
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
 
-            RestoreWhenHostileDetected = modSettingsPack.GetHandle(
-                "RestoreWhenHostileDetected",
-                "RestoreWhenHostileDetected",
-                "Restore all workAmount when hostile detected on any map",
-                true);
             CheckHostileDelay = modSettingsPack.GetHandle(
                 "CheckHostileDelay",
-                "CheckHostileDelay",
-                "Check hostile delay in ticks. Default 420 ticks ~= 7 seconds",
+                "CheckHostileDelay".Translate(),
+                "CheckHostileDelayDesc".Translate(),
                 420);
+
+            RestoreWhenHostileDetected = modSettingsPack.GetHandle(
+                "RestoreWhenHostileDetected",
+                "RestoreWhenHostileDetected".Translate(),
+                "RestoreWhenHostileDetectedDesc".Translate(),
+                true);
+
+            // percentes //
             PercentOfBaseResearches = modSettingsPack.GetHandle(
                 "PercentOfBaseResearches",
-                "PercentOfBaseResearches",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBaseResearches".Translate(),
+                "PercentOfBaseResearchesDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseResearches.OnValueChanged = newVal => Log.Message($"New: {newVal}");
+            PercentOfBaseResearches.OnValueChanged = newVal =>
+            {
+                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
+                {
+                    w.Set(newVal / 100f);
+                }
+            };
 
             PercentOfBaseTerrains = modSettingsPack.GetHandle(
                 "PercentOfBaseTerrains",
-                "PercentOfBaseTerrains",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBaseTerrains".Translate(),
+                "PercentOfBaseTerrainsDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBaseTerrains.OnValueChanged = newVal =>
+            {
+                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
+                {
+                    w.Set(newVal / 100f);
+                }
+            };
+
             PercentOfBaseRecipes = modSettingsPack.GetHandle(
                 "PercentOfBaseRecipes",
-                "PercentOfBaseRecipes",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBaseRecipes".Translate(),
+                "PercentOfBaseRecipesDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBaseRecipes.OnValueChanged = newVal =>
+            {
+                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
+                {
+                    w.Set(newVal / 100f);
+                }
+            };
+
             PercentOfBaseThingStats = modSettingsPack.GetHandle(
                 "PercentOfBaseThingStats",
-                "PercentOfBaseThingStats",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBaseThingStats".Translate(),
+                "PercentOfBaseThingStatsDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBaseThingStats.OnValueChanged = newVal =>
+            {
+                foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
+                {
+                    w.SetStats(newVal / 100f);
+                }
+            };
+
             PercentOfBaseThingFactors = modSettingsPack.GetHandle(
                 "PercentOfBaseThingFactors",
-                "PercentOfBaseThingFactors",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBaseThingFactors".Translate(),
+                "PercentOfBaseThingFactorsDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBaseThingFactors.OnValueChanged = newVal =>
+            {
+                foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
+                {
+                    w.SetFactors(newVal / 100f);
+                }
+            };
+
             PercentOfBasePlantsWork = modSettingsPack.GetHandle(
                 "PercentOfBasePlantsWork",
-                "PercentOfBasePlantsWork",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBasePlantsWork".Translate(),
+                "PercentOfBasePlantsWorkDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBasePlantsWork.OnValueChanged = newVal =>
+            {
+                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
+                {
+                    w.Set(newVal / 100f);
+                }
+            };
+
             PercentOfBasePlantsGrowDays = modSettingsPack.GetHandle(
                 "PercentOfBasePlantsGrowDays",
-                "PercentOfBasePlantsGrowDays",
-                "Rebalance all workAmount for recipes, buildings, researches",
+                "PercentOfBasePlantsGrowDays".Translate(),
+                "PercentOfBasePlantsGrowDaysDesc".Translate(),
                 100,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+            PercentOfBasePlantsGrowDays.OnValueChanged = newVal =>
+            {
+                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
+                {
+                    w.Set(newVal / 100f);
+                }
+            };
+
             RepairJobAddX = modSettingsPack.GetHandle(
                 "RepairJobAddX",
-                "RepairJobAddX",
-                "Add hitpoints when repair buildings. Default = 1",
+                "RepairJobAddX".Translate(),
+                "RepairJobAddXDesc".Translate(),
                 1,
                 value => int.TryParse(value, out int num) && num >= 1 && num <= 1000);
             if (HSKCollectJobsPatched)
             {
                 PercentOfBaseHSKCollectJobs = modSettingsPack.GetHandle(
                     "PercentOfBaseHSKCollectJobs",
-                    "PercentOfBaseHSKCollectJobs",
-                    "HSK Collect Jobs: Peat, Clay, Sand, Crushedstone",
+                    "PercentOfBaseHSKCollectJobs".Translate(),
+                    "PercentOfBaseHSKCollectJobsDesc".Translate(),
                     100,
                     value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
             }
-
             if (RFDrillJobPatched)
             {
                 RFDrillJobMultiplier = modSettingsPack.GetHandle(
                     "RFDrillJobMultiplier",
-                    "RFDrillJobMultiplier",
-                    "Rimfeller Drill Job Multiplier. Default = 1",
+                    "RFDrillJobMultiplier".Translate(),
+                    "RFDrillJobMultiplierDesc".Translate(),
                     1f,
                     value => float.TryParse(value, out float num) && num >= 1f && num <= 1000f);
             }
@@ -183,11 +241,13 @@ namespace WorkRebalancer
             {
                 PercentOfBaseHSKMineQuarry = modSettingsPack.GetHandle(
                     "PercentOfBaseHSKMineQuarry",
-                    "PercentOfBaseHSKMineQuarry",
-                    "HSK Quarry mine. Default = 100",
+                    "PercentOfBaseHSKMineQuarry".Translate(),
+                    "PercentOfBaseHSKMineQuarryDesc".Translate(),
                     100,
                     value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
             }
+
+
             DebugLog = modSettingsPack.GetHandle(
                 "DebugLog",
                 "DebugLog",
@@ -195,20 +255,16 @@ namespace WorkRebalancer
                 false);
 
 
-            SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "Rebalance", "RebalanceDesc", false);
-            handleRebalance.CustomDrawer = rect =>
-            {
-                if (Widgets.ButtonText(rect, "Rebalance"))
-                {
-                    ApplySettings();
-                }
-
-                return false;
-            };
-            SettingHandle<bool> handleReset = modSettingsPack.GetHandle("Reset", "Reset", "ResetDesc", false);
+            //SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "RebalanceBtn".Translate(), "RebalanceBtnDesc".Translate(), false);
+            //handleRebalance.CustomDrawer = rect =>
+            //{
+            //    if (Widgets.ButtonText(rect, "RebalanceBtn".Translate())) ApplySettings();
+            //    return false;
+            //};
+            SettingHandle<bool> handleReset = modSettingsPack.GetHandle("Reset", "ResetBtn".Translate(), "ResetBtnDesc".Translate(), false);
             handleReset.CustomDrawer = rect =>
             {
-                if (Widgets.ButtonText(rect, "Reset"))
+                if (Widgets.ButtonText(rect, "ResetBtn".Translate()))
                 {
                     RestoreWhenHostileDetected.ResetToDefault();
                     CheckHostileDelay.ResetToDefault();
@@ -220,22 +276,12 @@ namespace WorkRebalancer
                     PercentOfBasePlantsWork.ResetToDefault();
                     PercentOfBasePlantsGrowDays.ResetToDefault();
                     RepairJobAddX.ResetToDefault();
-                    PercentOfBaseHSKCollectJobs.ResetToDefault();
-                    RFDrillJobMultiplier.ResetToDefault();
-                    PercentOfBaseHSKMineQuarry.ResetToDefault();
+                    PercentOfBaseHSKCollectJobs?.ResetToDefault();
+                    RFDrillJobMultiplier?.ResetToDefault();
+                    PercentOfBaseHSKMineQuarry?.ResetToDefault();
                     
-                    //PercentOfBaseResearches.StringValue = 100.ToString();
-                    //PercentOfBaseTerrains.StringValue = 100.ToString();
-                    //PercentOfBaseRecipes.StringValue = 100.ToString();
-                    //PercentOfBaseThingStats.StringValue = 100.ToString();
-                    //PercentOfBaseThingFactors.StringValue = 100.ToString();
-
-                    //PercentOfBaseResearches.Value = 100;
-                    //PercentOfBaseTerrains.Value = 100;
-                    //PercentOfBaseRecipes.Value = 100;
-                    //PercentOfBaseThingStats.Value = 100;
-                    //PercentOfBaseThingFactors.Value = 100;
                     ApplySettings();
+                    return true;
                 }
 
                 return false;
@@ -244,96 +290,53 @@ namespace WorkRebalancer
             
         }
 
+        // hostile detected
+        public void ApplySettingsDefaults() => workDefDatabase.ForEach(w => w.Restore());
+
         public void ApplySettings()
         {
-            //if (RestoreWhenHostileDetected.Value && HostileDetected)
+            //if (RestoreWhenHostileDetected && HostileDetected)
             //    return;
 
             //Loger.Clear();
-            float percent;
-
-            percent = PercentOfBaseResearches.Value / 100f;
             foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
             {
-                w.Set(percent);
+                w.Set(PercentOfBaseResearches / 100f);
             }
                     
-            percent = PercentOfBaseTerrains.Value / 100f;
             foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
             {
-                w.Set(percent);
+                w.Set(PercentOfBaseTerrains / 100f);
             }
                     
-            percent = PercentOfBaseRecipes.Value / 100f;
             foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
             {
-                w.Set(percent);
+                w.Set(PercentOfBaseRecipes / 100f);
             }
                     
-            percent = PercentOfBaseThingStats.Value / 100f;
             foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
             {
-                w.SetStats(percent);
+                w.SetStats(PercentOfBaseThingStats / 100f);
             }
                     
-            percent = PercentOfBaseThingFactors.Value / 100f;
             foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
             {
-                w.SetFactors(percent);
+                w.SetFactors(PercentOfBaseThingFactors / 100f);
             }
 
-            percent = PercentOfBasePlantsWork.Value / 100f;
             foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
             {
-                w.Set(percent);
+                w.Set(PercentOfBasePlantsWork / 100f);
             }
 
-            percent = PercentOfBasePlantsGrowDays.Value / 100f;
             foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
             {
-                w.Set(percent);
+                w.Set(PercentOfBasePlantsGrowDays / 100f);
             }
             //Loger.Save("dumpRebuilder.txt");
         }
 
-        // hostile detected
-        public void ApplySettingsDefaults()
-        {
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
-            {
-                w.Set(1f);
-            }
-                    
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
-            {
-                w.Set(1f);
-            }
-                    
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
-            {
-                w.Set(1f);
-            }
-                    
-            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-            {
-                w.SetStats(1f);
-            }
-                    
-            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-            {
-                w.SetFactors(1f);
-            }
-
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
-            {
-                w.Set(1f);
-            }
-
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
-            {
-                w.Set(1f);
-            }
-        }
+        
 
         public SettingHandle<bool> RestoreWhenHostileDetected;
         public SettingHandle<int> CheckHostileDelay;
@@ -350,9 +353,9 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBaseHSKMineQuarry;
         public SettingHandle<bool> DebugLog;
 
-        public bool HSKCollectJobsPatched = false;
-        public bool RFDrillJobPatched = false;
-        public bool HSKMineQuarryPatched = false;
-        public bool HostileDetected = false;
+        public bool HSKCollectJobsPatched { get; }
+        public bool RFDrillJobPatched { get; }
+        public bool HSKMineQuarryPatched { get; }
+        public bool HostileDetected { get; private set; }
     }
 }

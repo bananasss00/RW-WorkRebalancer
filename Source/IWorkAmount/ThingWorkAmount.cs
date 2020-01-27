@@ -75,12 +75,8 @@ namespace WorkRebalancer
 
         public void Set(float percentOfBaseValue)
         {
-            ThingDef def = (ThingDef) Ref;
-            if (uninstallWork != null) def.building.uninstallWork = (float)uninstallWork * percentOfBaseValue;
-            SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildStat, percentOfBaseValue);
-            SetMod(def.statBases?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake), workToMakeStat, percentOfBaseValue);
-            SetMod(def.stuffProps?.statFactors?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToBuild), workToBuildFactor, percentOfBaseValue);
-            SetMod(def.stuffProps?.statFactors?.FirstOrDefault(x2 => x2.stat == StatDefOf.WorkToMake), workToMakeFactor, percentOfBaseValue);
+            SetStats(percentOfBaseValue);
+            SetFactors(percentOfBaseValue);
         }
 
         public void SetStats(float percentOfBaseValue)
