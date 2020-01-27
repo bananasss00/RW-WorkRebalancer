@@ -98,6 +98,36 @@ namespace WorkRebalancer
             Log.Message($"WorkRebalancerMod :: DefsLoaded");
         }
         
+        /// <summary>
+        /// Get from workDefDatabase all T : IWorkAmount types and apply percent value
+        /// </summary>
+        /// <typeparam name="T">IWorkAmount type</typeparam>
+        /// <param name="value">percent value</param>
+        /// <param name="customAction">if defined: customAction(workAmount, percentValue)</param>
+        public void ApplySetting<T>(int value, Action<T, float> customAction = null) where T : IWorkAmount 
+        {
+            float percent = value / 100f;
+            foreach (T w in workDefDatabase.Where(x => x.GetType() == typeof(T)))
+            {
+                if (customAction == null) w.Set(percent); else customAction(w, percent);
+            }
+        }
+
+        public void CreateWorkAmountSetting<T>(ref SettingHandle<int> settingHandle, string settingName, Action<T, float> customAction = null) where T : IWorkAmount 
+        {
+            settingHandle = modSettingsPack.GetHandle(
+                settingName,
+                settingName.Translate(),
+                $"{settingName}Desc".Translate(),
+                100,
+                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+
+            settingHandle.OnValueChanged = newVal =>
+            {
+                ApplySetting(newVal, customAction);
+            };
+        }
+
         public void InitializeSettings()
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
@@ -115,103 +145,13 @@ namespace WorkRebalancer
                 true);
 
             // percentes //
-            PercentOfBaseResearches = modSettingsPack.GetHandle(
-                "PercentOfBaseResearches",
-                "PercentOfBaseResearches".Translate(),
-                "PercentOfBaseResearchesDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseResearches.OnValueChanged = newVal =>
-            {
-                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
-                {
-                    w.Set(newVal / 100f);
-                }
-            };
-
-            PercentOfBaseTerrains = modSettingsPack.GetHandle(
-                "PercentOfBaseTerrains",
-                "PercentOfBaseTerrains".Translate(),
-                "PercentOfBaseTerrainsDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseTerrains.OnValueChanged = newVal =>
-            {
-                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
-                {
-                    w.Set(newVal / 100f);
-                }
-            };
-
-            PercentOfBaseRecipes = modSettingsPack.GetHandle(
-                "PercentOfBaseRecipes",
-                "PercentOfBaseRecipes".Translate(),
-                "PercentOfBaseRecipesDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseRecipes.OnValueChanged = newVal =>
-            {
-                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
-                {
-                    w.Set(newVal / 100f);
-                }
-            };
-
-            PercentOfBaseThingStats = modSettingsPack.GetHandle(
-                "PercentOfBaseThingStats",
-                "PercentOfBaseThingStats".Translate(),
-                "PercentOfBaseThingStatsDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseThingStats.OnValueChanged = newVal =>
-            {
-                foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-                {
-                    w.SetStats(newVal / 100f);
-                }
-            };
-
-            PercentOfBaseThingFactors = modSettingsPack.GetHandle(
-                "PercentOfBaseThingFactors",
-                "PercentOfBaseThingFactors".Translate(),
-                "PercentOfBaseThingFactorsDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBaseThingFactors.OnValueChanged = newVal =>
-            {
-                foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-                {
-                    w.SetFactors(newVal / 100f);
-                }
-            };
-
-            PercentOfBasePlantsWork = modSettingsPack.GetHandle(
-                "PercentOfBasePlantsWork",
-                "PercentOfBasePlantsWork".Translate(),
-                "PercentOfBasePlantsWorkDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBasePlantsWork.OnValueChanged = newVal =>
-            {
-                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
-                {
-                    w.Set(newVal / 100f);
-                }
-            };
-
-            PercentOfBasePlantsGrowDays = modSettingsPack.GetHandle(
-                "PercentOfBasePlantsGrowDays",
-                "PercentOfBasePlantsGrowDays".Translate(),
-                "PercentOfBasePlantsGrowDaysDesc".Translate(),
-                100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
-            PercentOfBasePlantsGrowDays.OnValueChanged = newVal =>
-            {
-                foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
-                {
-                    w.Set(newVal / 100f);
-                }
-            };
+            CreateWorkAmountSetting<ResearchWorkAmount>(ref PercentOfBaseResearches, "PercentOfBaseResearches");
+            CreateWorkAmountSetting<TerrainWorkAmount>(ref PercentOfBaseTerrains, "PercentOfBaseTerrains");
+            CreateWorkAmountSetting<RecipeWorkAmount>(ref PercentOfBaseRecipes, "PercentOfBaseRecipes");
+            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingStats, "PercentOfBaseThingStats", (w, p) => w.SetStats(p));
+            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingFactors, "PercentOfBaseThingFactors", (w, p) => w.SetFactors(p));
+            CreateWorkAmountSetting<PlantWorkAmount>(ref PercentOfBasePlantsWork, "PercentOfBasePlantsWork");
+            CreateWorkAmountSetting<PlantGrowDays>(ref PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays");
 
             RepairJobAddX = modSettingsPack.GetHandle(
                 "RepairJobAddX",
@@ -299,40 +239,13 @@ namespace WorkRebalancer
             //    return;
 
             //Loger.Clear();
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(ResearchWorkAmount)))
-            {
-                w.Set(PercentOfBaseResearches / 100f);
-            }
-                    
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(TerrainWorkAmount)))
-            {
-                w.Set(PercentOfBaseTerrains / 100f);
-            }
-                    
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(RecipeWorkAmount)))
-            {
-                w.Set(PercentOfBaseRecipes / 100f);
-            }
-                    
-            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-            {
-                w.SetStats(PercentOfBaseThingStats / 100f);
-            }
-                    
-            foreach (ThingWorkAmount w in workDefDatabase.Where(x => x.GetType() == typeof(ThingWorkAmount)))
-            {
-                w.SetFactors(PercentOfBaseThingFactors / 100f);
-            }
-
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantWorkAmount)))
-            {
-                w.Set(PercentOfBasePlantsWork / 100f);
-            }
-
-            foreach (var w in workDefDatabase.Where(x => x.GetType() == typeof(PlantGrowDays)))
-            {
-                w.Set(PercentOfBasePlantsGrowDays / 100f);
-            }
+            ApplySetting<ResearchWorkAmount>(PercentOfBaseResearches);
+            ApplySetting<TerrainWorkAmount>(PercentOfBaseTerrains);
+            ApplySetting<RecipeWorkAmount>(PercentOfBaseRecipes);
+            ApplySetting<ThingWorkAmount>(PercentOfBaseThingStats, (w, p) => w.SetStats(p));
+            ApplySetting<ThingWorkAmount>(PercentOfBaseThingFactors, (w, p) => w.SetFactors(p));
+            ApplySetting<PlantWorkAmount>(PercentOfBasePlantsWork);
+            ApplySetting<PlantGrowDays>(PercentOfBasePlantsGrowDays);
             //Loger.Save("dumpRebuilder.txt");
         }
 
