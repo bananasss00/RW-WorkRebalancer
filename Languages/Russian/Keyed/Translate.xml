@@ -34,5 +34,9 @@
 	<RFDrillJobMultiplierDesc>Множитель на базовое значение выполненого бурения за 1 тик</RFDrillJobMultiplierDesc>
 	<PercentOfBaseHSKMineQuarry>[HSK-Quarry] Работа в карьере в %</PercentOfBaseHSKMineQuarry>
 	<PercentOfBaseHSKMineQuarryDesc>Процент от базового значения количества работы для работы в карьере</PercentOfBaseHSKMineQuarryDesc>
+	<SkillLearnMultiplier>[Буст опыта] Множитель XP</SkillLearnMultiplier>
+	<SkillLearnMultiplierDesc>За выполненную работу дается определенное кол-во опыта, этот множитель позволяет увеличить стандартное значение в X раз. По умолчанию = 1.0</SkillLearnMultiplierDesc>
+	<SkillLearnAllowMax>[Буст опыта] Изменять значения XP ниже этого предела</SkillLearnAllowMax>
+	<SkillLearnAllowMaxDesc>Полученный опыт за работу будет модифицирован, если он меньше этого значения. Если указано значение 0, то будет изменяться весь получаемый опыт</SkillLearnAllowMaxDesc>
 
 </LanguageData>

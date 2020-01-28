@@ -35,6 +35,7 @@ namespace WorkRebalancer
             Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply SkillRecord_Learn_Patch... Result = {SkillRecord_Learn_Patch.Apply(h)}");
         }
 
         public override string ModIdentifier => "WorkRebalancer";
@@ -187,6 +188,17 @@ namespace WorkRebalancer
                     value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
             }
 
+            SkillLearnMultiplier = modSettingsPack.GetHandle(
+                "SkillLearnMultiplier",
+                "SkillLearnMultiplier".Translate(),
+                "SkillLearnMultiplierDesc".Translate(),
+                1f);
+            SkillLearnAllowMax = modSettingsPack.GetHandle(
+                "SkillLearnAllowMax",
+                "SkillLearnAllowMax".Translate(),
+                "SkillLearnAllowMaxDesc".Translate(),
+                0);
+
 
             DebugLog = modSettingsPack.GetHandle(
                 "DebugLog",
@@ -219,6 +231,8 @@ namespace WorkRebalancer
                     PercentOfBaseHSKCollectJobs?.ResetToDefault();
                     RFDrillJobMultiplier?.ResetToDefault();
                     PercentOfBaseHSKMineQuarry?.ResetToDefault();
+                    SkillLearnMultiplier.ResetToDefault();
+                    SkillLearnAllowMax.ResetToDefault();
                     
                     ApplySettings();
                     return true;
@@ -264,6 +278,8 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBaseHSKCollectJobs;
         public SettingHandle<float> RFDrillJobMultiplier;
         public SettingHandle<int> PercentOfBaseHSKMineQuarry;
+        public SettingHandle<float> SkillLearnMultiplier;
+        public SettingHandle<int> SkillLearnAllowMax;
         public SettingHandle<bool> DebugLog;
 
         public bool HSKCollectJobsPatched { get; }
