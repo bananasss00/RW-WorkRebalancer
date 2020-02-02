@@ -15,7 +15,8 @@ namespace WorkRebalancer
             {
                 foreach (var thing in map.listerThings.AllThings)
                 {
-                    if (thing.HostileTo(Faction.OfPlayer) && thing.def.building == null) // skip hostile buildings
+                    Pawn p = thing as Pawn;
+                    if (thing.HostileTo(Faction.OfPlayer) && thing.def.building == null && (p == null || !p.Downed)) // skip hostile buildings and downed pawns
                     {
                         if (WorkRebalancerMod.Instance.DebugLog)
                         {

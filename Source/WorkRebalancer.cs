@@ -31,7 +31,7 @@ namespace WorkRebalancer
             HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
-            //Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
@@ -99,6 +99,9 @@ namespace WorkRebalancer
             Log.Message($"WorkRebalancerMod :: DefsLoaded");
         }
         
+        public bool ValueValidator(string value, int min, int max) => int.TryParse(value, out int num) && num >= min && num <= max;
+        public bool ValueValidator(string value, float min, float max) => float.TryParse(value, out float num) && num >= min && num <= max;
+
         /// <summary>
         /// Get from workDefDatabase all T : IWorkAmount types and apply percent value
         /// </summary>
@@ -121,7 +124,7 @@ namespace WorkRebalancer
                 settingName.Translate(),
                 $"{settingName}Desc".Translate(),
                 100,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+                value => ValueValidator(value, 1, 100));
 
             settingHandle.OnValueChanged = newVal =>
             {
@@ -129,21 +132,17 @@ namespace WorkRebalancer
             };
         }
 
+        public void CreateCustomSetting<T>(ref SettingHandle<T> settingHandle, string settingName, T defaultValue) 
+        {
+            settingHandle = modSettingsPack.GetHandle(settingName, settingName.Translate(), $"{settingName}Desc".Translate(), defaultValue);
+        }
+
         public void InitializeSettings()
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
 
-            CheckHostileDelay = modSettingsPack.GetHandle(
-                "CheckHostileDelay",
-                "CheckHostileDelay".Translate(),
-                "CheckHostileDelayDesc".Translate(),
-                420);
-
-            RestoreWhenHostileDetected = modSettingsPack.GetHandle(
-                "RestoreWhenHostileDetected",
-                "RestoreWhenHostileDetected".Translate(),
-                "RestoreWhenHostileDetectedDesc".Translate(),
-                true);
+            CreateCustomSetting(ref CheckHostileDelay, "CheckHostileDelay", 420);
+            CreateCustomSetting(ref RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true);
 
             // percentes //
             CreateWorkAmountSetting<ResearchWorkAmount>(ref PercentOfBaseResearches, "PercentOfBaseResearches");
@@ -154,51 +153,23 @@ namespace WorkRebalancer
             CreateWorkAmountSetting<PlantWorkAmount>(ref PercentOfBasePlantsWork, "PercentOfBasePlantsWork");
             CreateWorkAmountSetting<PlantGrowDays>(ref PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays");
 
-            RepairJobAddX = modSettingsPack.GetHandle(
-                "RepairJobAddX",
-                "RepairJobAddX".Translate(),
-                "RepairJobAddXDesc".Translate(),
-                1,
-                value => int.TryParse(value, out int num) && num >= 1 && num <= 1000);
+            CreateCustomSetting(ref RepairJobAddX, "RepairJobAddX", 1);
+
             if (HSKCollectJobsPatched)
             {
-                PercentOfBaseHSKCollectJobs = modSettingsPack.GetHandle(
-                    "PercentOfBaseHSKCollectJobs",
-                    "PercentOfBaseHSKCollectJobs".Translate(),
-                    "PercentOfBaseHSKCollectJobsDesc".Translate(),
-                    100,
-                    value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+                CreateCustomSetting(ref PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100);
             }
             if (RFDrillJobPatched)
             {
-                RFDrillJobMultiplier = modSettingsPack.GetHandle(
-                    "RFDrillJobMultiplier",
-                    "RFDrillJobMultiplier".Translate(),
-                    "RFDrillJobMultiplierDesc".Translate(),
-                    1f,
-                    value => float.TryParse(value, out float num) && num >= 1f && num <= 1000f);
+                CreateCustomSetting(ref RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f);
             }
             if (HSKMineQuarryPatched)
             {
-                PercentOfBaseHSKMineQuarry = modSettingsPack.GetHandle(
-                    "PercentOfBaseHSKMineQuarry",
-                    "PercentOfBaseHSKMineQuarry".Translate(),
-                    "PercentOfBaseHSKMineQuarryDesc".Translate(),
-                    100,
-                    value => int.TryParse(value, out int num) && num >= 1 && num <= 100);
+                CreateCustomSetting(ref PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100);
             }
 
-            SkillLearnMultiplier = modSettingsPack.GetHandle(
-                "SkillLearnMultiplier",
-                "SkillLearnMultiplier".Translate(),
-                "SkillLearnMultiplierDesc".Translate(),
-                1f);
-            SkillLearnAllowMax = modSettingsPack.GetHandle(
-                "SkillLearnAllowMax",
-                "SkillLearnAllowMax".Translate(),
-                "SkillLearnAllowMaxDesc".Translate(),
-                0);
-
+            CreateCustomSetting(ref SkillLearnMultiplier, "SkillLearnMultiplier", 1f);
+            CreateCustomSetting(ref SkillLearnAllowMax, "SkillLearnAllowMax", 0);
 
             DebugLog = modSettingsPack.GetHandle(
                 "DebugLog",

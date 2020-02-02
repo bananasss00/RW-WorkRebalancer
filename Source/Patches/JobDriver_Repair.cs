@@ -13,20 +13,10 @@ namespace WorkRebalancer.Patches
     {
         private static readonly FieldInfo TicksToNextRepair = AccessTools.Field(typeof(JobDriver_Repair), "ticksToNextRepair");
 
-        public static bool Apply(HarmonyInstance h)
-        {
-            Type JobDriver_Repair_Type = AccessTools.TypeByName("RimWorld.JobDriver_Repair");
-            if (JobDriver_Repair_Type != null)
-            {
-                var MakeNewToils = AccessTools.Method(JobDriver_Repair_Type, "MakeNewToils");
-                if (MakeNewToils != null)
-                {
-                    h.Patch(MakeNewToils, prefix: new HarmonyMethod(AccessTools.Method(typeof(JobDriver_Repair_Patch), "MakeNewToilsPrefix")));
-                    return true;
-                }
-            }
-            return false;
-        }
+        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+            "RimWorld.JobDriver_Repair:MakeNewToils",
+            typeof(JobDriver_Repair_Patch).GetMethod("MakeNewToilsPrefix")
+        );
 
         public static bool MakeNewToilsPrefix(JobDriver_Repair __instance, ref IEnumerable<Toil> __result)
         {

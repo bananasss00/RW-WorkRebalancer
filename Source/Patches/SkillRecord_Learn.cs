@@ -11,20 +11,11 @@ namespace WorkRebalancer.Patches
 {
     public class SkillRecord_Learn_Patch
     {
-        public static bool Apply(HarmonyInstance h)
-        {
-            Type SkillRecord_Type = AccessTools.TypeByName("RimWorld.SkillRecord");
-            if (SkillRecord_Type != null)
-            {
-                var Learn = AccessTools.Method(SkillRecord_Type, "Learn");
-                if (Learn != null)
-                {
-                    h.Patch(Learn, prefix: new HarmonyMethod(AccessTools.Method(typeof(SkillRecord_Learn_Patch), "LearnPrefix")) {prioritiy = Priority.First});
-                    return true;
-                }
-            }
-            return false;
-        }
+        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+                "RimWorld.SkillRecord:Learn",
+                typeof(SkillRecord_Learn_Patch).GetMethod("LearnPrefix"),
+                Priority.First
+            );
 
         public static void LearnPrefix(/*SkillRecord __instance, Pawn ___pawn, */ref float xp, bool direct)
         {

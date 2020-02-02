@@ -12,20 +12,10 @@ namespace WorkRebalancer.Patches
 {
     public class RF_Drill_Patch
     {
-        public static bool Apply(HarmonyInstance h)
-        {
-            Type JobDriver_SuperviseDrilling_Type = AccessTools.TypeByName("Rimefeller.JobDriver_SuperviseDrilling");
-            if (JobDriver_SuperviseDrilling_Type != null)
-            {
-                var MakeNewToils = AccessTools.Method(JobDriver_SuperviseDrilling_Type, "MakeNewToils");
-                if (MakeNewToils != null)
-                {
-                    h.Patch(MakeNewToils, prefix: new HarmonyMethod(AccessTools.Method(typeof(RF_Drill_Patch), "MakeNewToilsPrefix")));
-                    return true;
-                }
-            }
-            return false;
-        }
+        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+            "Rimefeller.JobDriver_SuperviseDrilling:MakeNewToils",
+            typeof(RF_Drill_Patch).GetMethod("MakeNewToilsPrefix")
+        );
 
         public static bool MakeNewToilsPrefix(object __instance, ref IEnumerable<Toil> __result)
         {

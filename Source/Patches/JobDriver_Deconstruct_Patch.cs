@@ -11,20 +11,10 @@ namespace WorkRebalancer.Patches
 {
     public class JobDriver_Deconstruct_Patch
     {
-        public static bool Apply(HarmonyInstance h)
-        {
-            Type JobDriver_Deconstruct = AccessTools.TypeByName("RimWorld.JobDriver_Deconstruct");
-            if (JobDriver_Deconstruct != null)
-            {
-                var TotalNeededWork = AccessTools.Property(JobDriver_Deconstruct, "TotalNeededWork").GetGetMethod();
-                if (TotalNeededWork != null)
-                {
-                    h.Patch(TotalNeededWork, postfix: new HarmonyMethod(AccessTools.Method(typeof(JobDriver_Deconstruct_Patch), "TotalNeededWorkPostfix")));
-                    return true;
-                }
-            }
-            return false;
-        }
+        public static bool Apply(HarmonyInstance h) => h.PatchPostfix(
+            "RimWorld.JobDriver_Deconstruct:get_TotalNeededWork",
+            typeof(JobDriver_Deconstruct_Patch).GetMethod("TotalNeededWorkPostfix")
+        );
 
         public static void TotalNeededWorkPostfix(ref float __result)
         {

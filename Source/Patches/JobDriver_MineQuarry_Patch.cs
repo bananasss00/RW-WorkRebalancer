@@ -11,20 +11,10 @@ namespace WorkRebalancer.Patches
 {
     public class JobDriver_MineQuarry_Patch
     {
-        public static bool Apply(HarmonyInstance h)
-        {
-            Type JobDriver_MineQuarry_Type = AccessTools.TypeByName("Quarry.JobDriver_MineQuarry");
-            if (JobDriver_MineQuarry_Type != null)
-            {
-                var Mine = AccessTools.Method(JobDriver_MineQuarry_Type, "Mine");
-                if (Mine != null)
-                {
-                    h.Patch(Mine, postfix: new HarmonyMethod(AccessTools.Method(typeof(JobDriver_MineQuarry_Patch), "MinePostfix")));
-                    return true;
-                }
-            }
-            return false;
-        }
+        public static bool Apply(HarmonyInstance h) => h.PatchPostfix(
+            "Quarry.JobDriver_MineQuarry:Mine",
+            typeof(JobDriver_MineQuarry_Patch).GetMethod("MinePostfix")
+        );
 
         public static void MinePostfix(ref Toil __result)
         {

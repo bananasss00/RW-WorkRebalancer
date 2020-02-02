@@ -13,26 +13,11 @@ namespace WorkRebalancer.Patches
     {
         public static bool Apply(HarmonyInstance h)
         {
-            Type JobDriver_CollectSand_Type = AccessTools.TypeByName("SK.JobDriver_CollectSand");
-            Type JobDriver_CollectClay_Type = AccessTools.TypeByName("SK.JobDriver_CollectClay");
-            Type JobDriver_CollectPeat_Type = AccessTools.TypeByName("SK.JobDriver_CollectPeat");
-            Type JobDriver_CollectCrushedstone_Type = AccessTools.TypeByName("SK.JobDriver_CollectCrushedstone");
-            if (JobDriver_CollectSand_Type != null && JobDriver_CollectPeat_Type != null && JobDriver_CollectClay_Type != null && JobDriver_CollectCrushedstone_Type != null)
-            {
-                var CollectSand = AccessTools.Method(JobDriver_CollectSand_Type, "CollectSand");
-                var CollectPeat = AccessTools.Method(JobDriver_CollectPeat_Type, "CollectPeat");
-                var CollectClay = AccessTools.Method(JobDriver_CollectClay_Type, "CollectClay");
-                var CrushedStone = AccessTools.Method(JobDriver_CollectCrushedstone_Type, "CrushedStone");
-                if (CollectSand != null && CollectPeat != null && CollectClay != null && CrushedStone != null)
-                {
-                    h.Patch(CollectSand, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
-                    h.Patch(CollectPeat, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
-                    h.Patch(CollectClay, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
-                    h.Patch(CrushedStone, prefix: new HarmonyMethod(AccessTools.Method(typeof(HSK_CollectJobs_Patch), "HSK_CollectJobPrefix")));
-                    return true;
-                }
-            }
-            return false;
+            bool sand = h.PatchPrefix("SK.JobDriver_CollectSand:CollectSand", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));
+            bool clay = h.PatchPrefix("SK.JobDriver_CollectClay:CollectClay", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));
+            bool peat = h.PatchPrefix("SK.JobDriver_CollectPeat:CollectPeat", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));
+            bool cstone = h.PatchPrefix("SK.JobDriver_CollectCrushedstone:CrushedStone", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));
+            return sand && clay && peat && cstone;
         }
 
         public static void HSK_CollectJobPrefix(ref int ticksToCollect)
