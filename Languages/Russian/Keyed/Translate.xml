@@ -38,5 +38,30 @@
 	<SkillLearnMultiplierDesc>За выполненную работу дается определенное кол-во опыта, этот множитель позволяет увеличить стандартное значение в X раз. По умолчанию = 1.0</SkillLearnMultiplierDesc>
 	<SkillLearnAllowMax>[Буст опыта] Изменять значения XP ниже этого предела</SkillLearnAllowMax>
 	<SkillLearnAllowMaxDesc>Полученный опыт за работу будет модифицирован, если он меньше этого значения. Если указано значение 0, то будет изменяться весь получаемый опыт</SkillLearnAllowMaxDesc>
+	
+	<!-- Fast Aging -->
+	<PawnSpeedMultBeforeCutoff>Гуманоиды: Скорость ДО предельного возраста</PawnSpeedMultBeforeCutoff>
+	<PawnSpeedMultBeforeCutoffDesc>Aging speed multiplier for humanlike pawns younger than the humanlike age cutoff.</PawnSpeedMultBeforeCutoffDesc>
+	<PawnSpeedMultAfterCutoff>Гуманоиды: Скорость ПОСЛЕ предельного возраста</PawnSpeedMultAfterCutoff>
+	<PawnSpeedMultAfterCutoffDesc>Aging speed multiplier for humanlike pawns as old or older than the humanlike age cutoff.</PawnSpeedMultAfterCutoffDesc>
+	<PawnCutoffAge>Гуманоиды: Предельный возраст</PawnCutoffAge>
+	<PawnCutoffAgeDesc>Age cutoff where humanlike pawns switch from the before aging multiplier to the after aging multiplier.</PawnCutoffAgeDesc>
+
+	<AnimalSpeedMultBeforeCutoff>Животные: Скорость ДО предельного возраста</AnimalSpeedMultBeforeCutoff>
+	<AnimalSpeedMultBeforeCutoffDesc>Aging speed multiplier for animal pawns younger than the animal age cutoff.</AnimalSpeedMultBeforeCutoffDesc>
+	<AnimalSpeedMultAfterCutoff>Животные: Скорость ПОСЛЕ предельного возраста</AnimalSpeedMultAfterCutoff>
+	<AnimalSpeedMultAfterCutoffDesc>Aging speed multiplier for animal pawns as old or older than the animal age cutoff.</AnimalSpeedMultAfterCutoffDesc>
+	<AnimalCutoffAge>Животные: Предельный возраст</AnimalCutoffAge>
+	<AnimalCutoffAgeDesc>Age cutoff where animal pawns switch from the before aging multiplier to the after aging multiplier.</AnimalCutoffAgeDesc>
+	<RjwPregnancySpeedMult>[RJW] Скорость протекания беременнности(Множитель)</RjwPregnancySpeedMult>
+	<RjwPregnancySpeedMultDesc>Скорость протекания беременнности</RjwPregnancySpeedMultDesc>
+	<RjwInsectEggSpeedMult>[RJW] Скорость протекания беременнности(яйца)(Множитель)</RjwInsectEggSpeedMult>
+	<RjwInsectEggSpeedMultDesc>Скорость вылупления из яиц</RjwInsectEggSpeedMultDesc>
+	<EggHatchSpeedMult>Скорость вылупления из яиц(Множитель)</EggHatchSpeedMult>
+	<EggHatchSpeedMultDesc></EggHatchSpeedMultDesc>
+	<EggLayerSpeedMult>Скорость созревания яиц(Множитель)</EggLayerSpeedMult>
+	<EggLayerSpeedMultDesc></EggLayerSpeedMultDesc>
+	
+	
 
 </LanguageData>

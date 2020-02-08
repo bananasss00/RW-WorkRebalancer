@@ -36,6 +36,12 @@ namespace WorkRebalancer
             Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply SkillRecord_Learn_Patch... Result = {SkillRecord_Learn_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply Pawn_Tick_Patch... Result = {Pawn_Tick_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply RJW_Hediff_BasePregnancy_Tick_Patch... Result = {RjwPregnancyPatched = RJW_Hediff_BasePregnancy_Tick_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply RJW_Hediff_InsectEgg_Tick_Patch... Result = {RjwInsectEggPatched = RJW_Hediff_InsectEgg_Tick_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply CompHatcher_CompTick_Patch... Result = {CompHatcher_CompTick_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply Arachnophobia_CompMultiHatcher_CompTick_Patch... Result = {Arachnophobia_CompMultiHatcher_CompTick_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply CompEggLayer_CompTick_Patch... Result = {CompEggLayer_CompTick_Patch.Apply(h)}");
         }
 
         public override string ModIdentifier => "WorkRebalancer";
@@ -171,6 +177,24 @@ namespace WorkRebalancer
             CreateCustomSetting(ref SkillLearnMultiplier, "SkillLearnMultiplier", 1f);
             CreateCustomSetting(ref SkillLearnAllowMax, "SkillLearnAllowMax", 0);
 
+            //fast aging
+            CreateCustomSetting(ref PawnSpeedMultBeforeCutoff, "PawnSpeedMultBeforeCutoff", 1);
+            CreateCustomSetting(ref PawnSpeedMultAfterCutoff, "PawnSpeedMultAfterCutoff", 1);
+            CreateCustomSetting(ref PawnCutoffAge, "PawnCutoffAge", 16);
+            CreateCustomSetting(ref AnimalSpeedMultBeforeCutoff, "AnimalSpeedMultBeforeCutoff", 1);
+            CreateCustomSetting(ref AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1);
+            CreateCustomSetting(ref AnimalCutoffAge, "AnimalCutoffAge", 1);
+            if (RjwPregnancyPatched)
+            {
+                CreateCustomSetting(ref RjwPregnancySpeedMult, "RjwPregnancySpeedMult", 1f);
+            }
+            if (RjwInsectEggPatched)
+            {
+                CreateCustomSetting(ref RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1);
+            }
+            CreateCustomSetting(ref EggHatchSpeedMult, "EggHatchSpeedMult", 1f);
+            CreateCustomSetting(ref EggLayerSpeedMult, "EggLayerSpeedMult", 1f);
+
             DebugLog = modSettingsPack.GetHandle(
                 "DebugLog",
                 "DebugLog",
@@ -204,7 +228,18 @@ namespace WorkRebalancer
                     PercentOfBaseHSKMineQuarry?.ResetToDefault();
                     SkillLearnMultiplier.ResetToDefault();
                     SkillLearnAllowMax.ResetToDefault();
-                    
+
+                    PawnSpeedMultBeforeCutoff.ResetToDefault();
+                    PawnSpeedMultAfterCutoff.ResetToDefault();
+                    PawnCutoffAge.ResetToDefault();
+                    AnimalSpeedMultBeforeCutoff.ResetToDefault();
+                    AnimalSpeedMultAfterCutoff.ResetToDefault();
+                    AnimalCutoffAge.ResetToDefault();
+                    RjwPregnancySpeedMult.ResetToDefault();
+                    RjwInsectEggSpeedMult.ResetToDefault();
+                    EggHatchSpeedMult.ResetToDefault();
+                    EggLayerSpeedMult.ResetToDefault();
+
                     ApplySettings();
                     return true;
                 }
@@ -251,11 +286,27 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBaseHSKMineQuarry;
         public SettingHandle<float> SkillLearnMultiplier;
         public SettingHandle<int> SkillLearnAllowMax;
+
+        // Fast aging
+        public SettingHandle<int> PawnSpeedMultBeforeCutoff; //Actual value of the pawn speed multiplier before cutoff setting
+        public SettingHandle<int> PawnSpeedMultAfterCutoff; //Actual value of the pawn speed multiplier after cutoff setting
+        public SettingHandle<int> PawnCutoffAge; //Actual value of the pawn cutoff age setting
+        public SettingHandle<int> AnimalSpeedMultBeforeCutoff; //Actual value of the animal speed multiplier before cutoff setting
+        public SettingHandle<int> AnimalSpeedMultAfterCutoff; //Actual value of the animal speed multiplier after cutoff setting
+        public SettingHandle<int> AnimalCutoffAge; //Actual value of the animal cutoff age setting
+        public SettingHandle<float> RjwPregnancySpeedMult;
+        public SettingHandle<int> RjwInsectEggSpeedMult;
+        public SettingHandle<float> EggHatchSpeedMult;
+        public SettingHandle<float> EggLayerSpeedMult;
+
+
         public SettingHandle<bool> DebugLog;
 
         public bool HSKCollectJobsPatched { get; }
         public bool RFDrillJobPatched { get; }
         public bool HSKMineQuarryPatched { get; }
+        public bool RjwPregnancyPatched { get; }
+        public bool RjwInsectEggPatched { get; }
         public bool HostileDetected { get; private set; }
     }
 }
