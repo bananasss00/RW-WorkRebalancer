@@ -108,6 +108,55 @@ namespace WorkRebalancer
         public bool ValueValidator(string value, int min, int max) => int.TryParse(value, out int num) && num >= min && num <= max;
         public bool ValueValidator(string value, float min, float max) => float.TryParse(value, out float num) && num >= min && num <= max;
 
+        public enum Tabs
+        {
+            generalTab,
+            pawnsTab,
+            fastAging,
+            otherTab,
+            none // not drawing
+        }
+
+        private static readonly string[] tabNames = Enum.GetNames(typeof(Tabs)).Where(x => !x.Equals("none")).Select(x => x.Translate()).ToArray();
+
+        private static readonly Color SelectedOptionColor = new Color(0.5f, 1f, 0.5f, 1f);
+
+        public static bool CustomDrawer_Tabs(Rect rect, SettingHandle<string> selected, string[] defaultValues)
+        {
+            int tabIdx = 0;
+            int width = 140, height = 20;
+            int nextX = 0, nextY = 0;
+            bool result = false;
+            foreach (string text in defaultValues) {
+                Rect buttonRect = new Rect(rect) {
+                    height = height,
+                    width = width,
+                    position = new Vector2(rect.position.x + nextX, rect.position.y + nextY)
+                };
+
+                Color color = GUI.color;
+                bool isCurrentTab = text == selected.Value;
+                if (isCurrentTab) GUI.color = SelectedOptionColor;
+                bool buttonPressed = Widgets.ButtonText(buttonRect, text);
+                if (isCurrentTab) GUI.color = color;
+
+                if (buttonPressed) {
+                    if (selected.Value != text) selected.Value = text;
+                    else selected.Value = "none";
+                    result = true;
+                }
+                tabIdx++;
+                
+                // draw 2 buttons in a row
+                if ((tabIdx % 2) == 0)
+                {
+                    nextY += height;
+                    nextX = 0;
+                } else nextX += width;
+            }
+            return result;
+        }
+
         /// <summary>
         /// Get from workDefDatabase all T : IWorkAmount types and apply percent value
         /// </summary>
@@ -123,7 +172,7 @@ namespace WorkRebalancer
             }
         }
 
-        public void CreateWorkAmountSetting<T>(ref SettingHandle<int> settingHandle, string settingName, Action<T, float> customAction = null) where T : IWorkAmount 
+        public void CreateWorkAmountSetting<T>(ref SettingHandle<int> settingHandle, string settingName, Tabs tabIndex, Action<T, float> customAction = null) where T : IWorkAmount 
         {
             settingHandle = modSettingsPack.GetHandle(
                 settingName,
@@ -136,78 +185,30 @@ namespace WorkRebalancer
             {
                 ApplySetting(newVal, customAction);
             };
+
+            settingHandle.VisibilityPredicate = () => tabsHandler.Value == tabNames[(int) tabIndex];
         }
 
-        public void CreateCustomSetting<T>(ref SettingHandle<T> settingHandle, string settingName, T defaultValue) 
+        public void CreateCustomSetting<T>(ref SettingHandle<T> settingHandle, string settingName, T defaultValue, Tabs tabIndex) 
         {
             settingHandle = modSettingsPack.GetHandle(settingName, settingName.Translate(), $"{settingName}Desc".Translate(), defaultValue);
+            if (tabIndex != Tabs.none)
+                settingHandle.VisibilityPredicate = () => tabsHandler.Value == tabNames[(int) tabIndex];
+        }
+
+        public void HugsLabelWtf(string label, Tabs tab)
+        {
+            var lbl = modSettingsPack.GetHandle($"lbl{label}", label.Translate(), "", "");
+            lbl.CustomDrawer = r => false;
+            lbl.Unsaved = true;
+            if (tab != Tabs.none)
+                lbl.VisibilityPredicate = () => tabsHandler.Value == tabNames[(int) tab];
         }
 
         public void InitializeSettings()
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
 
-            CreateCustomSetting(ref CheckHostileDelay, "CheckHostileDelay", 420);
-            CreateCustomSetting(ref RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true);
-
-            // percentes //
-            CreateWorkAmountSetting<ResearchWorkAmount>(ref PercentOfBaseResearches, "PercentOfBaseResearches");
-            CreateWorkAmountSetting<TerrainWorkAmount>(ref PercentOfBaseTerrains, "PercentOfBaseTerrains");
-            CreateWorkAmountSetting<RecipeWorkAmount>(ref PercentOfBaseRecipes, "PercentOfBaseRecipes");
-            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingStats, "PercentOfBaseThingStats", (w, p) => w.SetStats(p));
-            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingFactors, "PercentOfBaseThingFactors", (w, p) => w.SetFactors(p));
-            CreateWorkAmountSetting<PlantWorkAmount>(ref PercentOfBasePlantsWork, "PercentOfBasePlantsWork");
-            CreateWorkAmountSetting<PlantGrowDays>(ref PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays");
-
-            CreateCustomSetting(ref RepairJobAddX, "RepairJobAddX", 1);
-
-            if (HSKCollectJobsPatched)
-            {
-                CreateCustomSetting(ref PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100);
-            }
-            if (RFDrillJobPatched)
-            {
-                CreateCustomSetting(ref RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f);
-            }
-            if (HSKMineQuarryPatched)
-            {
-                CreateCustomSetting(ref PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100);
-            }
-
-            CreateCustomSetting(ref SkillLearnMultiplier, "SkillLearnMultiplier", 1f);
-            CreateCustomSetting(ref SkillLearnAllowMax, "SkillLearnAllowMax", 0);
-
-            //fast aging
-            CreateCustomSetting(ref PawnSpeedMultBeforeCutoff, "PawnSpeedMultBeforeCutoff", 1);
-            CreateCustomSetting(ref PawnSpeedMultAfterCutoff, "PawnSpeedMultAfterCutoff", 1);
-            CreateCustomSetting(ref PawnCutoffAge, "PawnCutoffAge", 16);
-            CreateCustomSetting(ref AnimalSpeedMultBeforeCutoff, "AnimalSpeedMultBeforeCutoff", 1);
-            CreateCustomSetting(ref AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1);
-            CreateCustomSetting(ref AnimalCutoffAge, "AnimalCutoffAge", 1);
-            if (RjwPregnancyPatched)
-            {
-                CreateCustomSetting(ref RjwPregnancySpeedMult, "RjwPregnancySpeedMult", 1f);
-            }
-            if (RjwInsectEggPatched)
-            {
-                CreateCustomSetting(ref RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1);
-            }
-            CreateCustomSetting(ref EggHatchSpeedMult, "EggHatchSpeedMult", 1f);
-            CreateCustomSetting(ref EggLayerSpeedMult, "EggLayerSpeedMult", 1f);
-
-            DebugLog = modSettingsPack.GetHandle(
-                "DebugLog",
-                "DebugLog",
-                "DebugLog",
-                false);
-
-
-            //SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "RebalanceBtn".Translate(), "RebalanceBtnDesc".Translate(), false);
-            //handleRebalance.CustomDrawer = rect =>
-            //{
-            //    if (Widgets.ButtonText(rect, "RebalanceBtn".Translate())) ApplySettings();
-            //    return false;
-            //};
             SettingHandle<bool> handleReset = modSettingsPack.GetHandle("Reset", "ResetBtn".Translate(), "ResetBtnDesc".Translate(), false);
             handleReset.CustomDrawer = rect =>
             {
@@ -247,6 +248,87 @@ namespace WorkRebalancer
                 return false;
             };
 
+            CreateCustomSetting(ref CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
+            CreateCustomSetting(ref RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
+
+            var marks = modSettingsPack.GetHandle("marks", "marksTitle".Translate(), "", "");
+            marks.CustomDrawer = rect =>
+            {
+                Widgets.Label(rect, "marksDesc".Translate());
+                return false;
+            };
+            marks.CustomDrawerHeight = int.Parse( "marksDescHeight".Translate() );
+
+            tabsHandler = modSettingsPack.GetHandle("tabs", "tabsTitle".Translate(), "", "none");
+            tabsHandler.CustomDrawer = rect => CustomDrawer_Tabs(rect, tabsHandler, tabNames);
+            tabsHandler.CustomDrawerHeight = (float)Math.Ceiling((double)tabNames.Length / 2) * 20; 
+
+            // generalTab //
+            CreateWorkAmountSetting<ResearchWorkAmount>(ref PercentOfBaseResearches, "PercentOfBaseResearches", Tabs.generalTab);
+            CreateWorkAmountSetting<TerrainWorkAmount>(ref PercentOfBaseTerrains, "PercentOfBaseTerrains", Tabs.generalTab);
+            CreateWorkAmountSetting<RecipeWorkAmount>(ref PercentOfBaseRecipes, "PercentOfBaseRecipes", Tabs.generalTab);
+            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
+            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
+            CreateWorkAmountSetting<PlantWorkAmount>(ref PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
+            CreateCustomSetting(ref RepairJobAddX, "RepairJobAddX", 1, Tabs.generalTab);
+            if (HSKCollectJobsPatched)
+            {
+                CreateCustomSetting(ref PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100, Tabs.generalTab);
+            }
+            if (RFDrillJobPatched)
+            {
+                CreateCustomSetting(ref RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f, Tabs.generalTab);
+            }
+            if (HSKMineQuarryPatched)
+            {
+                CreateCustomSetting(ref PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100, Tabs.generalTab);
+            }
+
+            // otherTab //
+            HugsLabelWtf("boostXpTitle", Tabs.otherTab);
+            CreateCustomSetting(ref SkillLearnMultiplier, "SkillLearnMultiplier", 1f, Tabs.otherTab);
+            CreateCustomSetting(ref SkillLearnAllowMax, "SkillLearnAllowMax", 0, Tabs.otherTab);
+
+            // fast aging //
+            HugsLabelWtf("humanoidTitle", Tabs.fastAging);
+            CreateCustomSetting(ref PawnSpeedMultBeforeCutoff, "PawnSpeedMultBeforeCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref PawnSpeedMultAfterCutoff, "PawnSpeedMultAfterCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref PawnCutoffAge, "PawnCutoffAge", 16, Tabs.fastAging);
+
+            HugsLabelWtf("animalsTitle", Tabs.fastAging);
+            CreateCustomSetting(ref AnimalSpeedMultBeforeCutoff, "AnimalSpeedMultBeforeCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref AnimalCutoffAge, "AnimalCutoffAge", 1, Tabs.fastAging);
+
+            //HugsLabelWtf("otherTitle", Tabs.fastAging);
+            CreateWorkAmountSetting<PlantGrowDays>(ref PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays", Tabs.pawnsTab);
+            CreateCustomSetting(ref EggHatchSpeedMult, "EggHatchSpeedMult", 1f, Tabs.pawnsTab);
+            CreateCustomSetting(ref EggLayerSpeedMult, "EggLayerSpeedMult", 1f, Tabs.pawnsTab);
+            if (RjwPregnancyPatched)
+            {
+                CreateCustomSetting(ref RjwPregnancySpeedMult, "RjwPregnancySpeedMult", 1f, Tabs.pawnsTab);
+            }
+            if (RjwInsectEggPatched)
+            {
+                CreateCustomSetting(ref RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1, Tabs.pawnsTab);
+            }
+
+            // debug //
+            DebugLog = modSettingsPack.GetHandle(
+                "DebugLog",
+                "DebugLog",
+                "DebugLog",
+                false);
+
+
+            //SettingHandle<bool> handleRebalance = modSettingsPack.GetHandle("Rebalance", "RebalanceBtn".Translate(), "RebalanceBtnDesc".Translate(), false);
+            //handleRebalance.CustomDrawer = rect =>
+            //{
+            //    if (Widgets.ButtonText(rect, "RebalanceBtn".Translate())) ApplySettings();
+            //    return false;
+            //};
+            
+
             
         }
 
@@ -270,7 +352,7 @@ namespace WorkRebalancer
         }
 
         
-
+        public SettingHandle<string> tabsHandler;
         public SettingHandle<bool> RestoreWhenHostileDetected;
         public SettingHandle<int> CheckHostileDelay;
         public SettingHandle<int> PercentOfBaseResearches;

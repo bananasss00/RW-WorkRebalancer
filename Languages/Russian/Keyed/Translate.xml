@@ -1,6 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<!-- Настройки -->
+	<marksTitle>Обозначения</marksTitle>
+	<marksDesc>[%] - процент от баз. значения. 100 = отключено\n[*] - множитель. 1 = отключено\n[+] - дополнительно к базовому. 1 = отключено</marksDesc>
+	<marksDescHeight>90</marksDescHeight>
+	
+	<tabsTitle>Вкладки</tabsTitle>
+	<boostXpTitle>Буст опыта</boostXpTitle>
+	
+	<generalTab>Количество работы</generalTab>
+	<fastAging>Fast Aging</fastAging>
+	<pawnsTab>Растения/Пешки</pawnsTab>
+	<otherTab>Другое</otherTab>
+	
 	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
 	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>
 	<ResetBtn>СБРОСИТЬ ВСЕ</ResetBtn>
@@ -10,56 +22,60 @@
 	<RestoreWhenHostileDetectedDesc>Восстанавливать стандартные настройки работ при обнаружении угроз</RestoreWhenHostileDetectedDesc>
 	<CheckHostileDelay>Задержка между проверками на угрозы в тиках</CheckHostileDelay>
 	<CheckHostileDelayDesc>Задержка между проверками на угрозы в тиках. 420 тиков ~= 7 секунд на 1й скорости</CheckHostileDelayDesc>
-	<PercentOfBaseResearches>Исследования в %</PercentOfBaseResearches>
+	
+	<PercentOfBaseResearches>[%] Исследования</PercentOfBaseResearches>
 	<PercentOfBaseResearchesDesc>Процент от базового значения для исследований</PercentOfBaseResearchesDesc>
-	<PercentOfBaseTerrains>Покрытия(полы) в %</PercentOfBaseTerrains>
+	<PercentOfBaseTerrains>[%] Покрытия(полы)</PercentOfBaseTerrains>
 	<PercentOfBaseTerrainsDesc>Процент от базового значения количества работы для покрытий(полов)</PercentOfBaseTerrainsDesc>
-	<PercentOfBaseRecipes>Рецепты в %</PercentOfBaseRecipes>
+	<PercentOfBaseRecipes>[%] Рецепты</PercentOfBaseRecipes>
 	<PercentOfBaseRecipesDesc>Процент от базового значения количества работы для изготовления рецепта</PercentOfBaseRecipesDesc>
-	<PercentOfBaseThingStats>Строительство в %</PercentOfBaseThingStats>
+	<PercentOfBaseThingStats>[%] Строительство</PercentOfBaseThingStats>
 	<PercentOfBaseThingStatsDesc>Процент от базового значения количества работы для постройки</PercentOfBaseThingStatsDesc>
-	<PercentOfBaseThingFactors>Материалы в %</PercentOfBaseThingFactors>
+	<PercentOfBaseThingFactors>[%] Материалы</PercentOfBaseThingFactors>
 	<PercentOfBaseThingFactorsDesc>Материалы добавляют дополнительное количество работы для построек или рецептов. Процент от базового значения количества работы</PercentOfBaseThingFactorsDesc>
-	<PercentOfBasePlantsWork>Фермерство в %</PercentOfBasePlantsWork>
+	<PercentOfBasePlantsWork>[%] Фермерство</PercentOfBasePlantsWork>
 	<PercentOfBasePlantsWorkDesc>Процент от базового значения количества работы для работы с растениями</PercentOfBasePlantsWorkDesc>
-	<PercentOfBasePlantsGrowDays>Скорость роста растений в %</PercentOfBasePlantsGrowDays>
+	<PercentOfBasePlantsGrowDays>[%] Скорость роста растений</PercentOfBasePlantsGrowDays>
 	<PercentOfBasePlantsGrowDaysDesc>Процент от базового значения скорости роста для растения</PercentOfBasePlantsGrowDaysDesc>
 	
 	<!-- Патчи работ -->
-	<RepairJobAddX>Работа: Ремонт построек (кол-во HP за тик)</RepairJobAddX>
+	<RepairJobAddX>[+] Работа: Ремонт построек</RepairJobAddX>
 	<RepairJobAddXDesc>Сколько добавляет HP постройке за 1 тик ремонта. По умолчанию 1 HP</RepairJobAddXDesc>
-	<PercentOfBaseHSKCollectJobs>[HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина) в %</PercentOfBaseHSKCollectJobs>
+	<PercentOfBaseHSKCollectJobs>[%] [HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина)</PercentOfBaseHSKCollectJobs>
 	<PercentOfBaseHSKCollectJobsDesc>Процент от базового значения количества работы для сбора песка, торфа, щебня, глины</PercentOfBaseHSKCollectJobsDesc>
-	<RFDrillJobMultiplier>[Rimfeller] Работа: Бурение скважины(Множитель бурения за тик)</RFDrillJobMultiplier>
+	<RFDrillJobMultiplier>[*] [Rimfeller] Работа: Бурение скважины</RFDrillJobMultiplier>
 	<RFDrillJobMultiplierDesc>Множитель на базовое значение выполненого бурения за 1 тик</RFDrillJobMultiplierDesc>
-	<PercentOfBaseHSKMineQuarry>[HSK-Quarry] Работа в карьере в %</PercentOfBaseHSKMineQuarry>
+	<PercentOfBaseHSKMineQuarry>[%] [HSK-Quarry] Работа в карьере</PercentOfBaseHSKMineQuarry>
 	<PercentOfBaseHSKMineQuarryDesc>Процент от базового значения количества работы для работы в карьере</PercentOfBaseHSKMineQuarryDesc>
-	<SkillLearnMultiplier>[Буст опыта] Множитель XP</SkillLearnMultiplier>
+	<SkillLearnMultiplier>[*] Множитель XP</SkillLearnMultiplier>
 	<SkillLearnMultiplierDesc>За выполненную работу дается определенное кол-во опыта, этот множитель позволяет увеличить стандартное значение в X раз. По умолчанию = 1.0</SkillLearnMultiplierDesc>
-	<SkillLearnAllowMax>[Буст опыта] Изменять значения XP ниже этого предела</SkillLearnAllowMax>
+	<SkillLearnAllowMax>Изменять значения XP ниже этого предела</SkillLearnAllowMax>
 	<SkillLearnAllowMaxDesc>Полученный опыт за работу будет модифицирован, если он меньше этого значения. Если указано значение 0, то будет изменяться весь получаемый опыт</SkillLearnAllowMaxDesc>
 	
 	<!-- Fast Aging -->
-	<PawnSpeedMultBeforeCutoff>Гуманоиды: Скорость ДО предельного возраста</PawnSpeedMultBeforeCutoff>
+	<humanoidTitle>&lt;color=yellow&gt;Гуманоиды:&lt;/color&gt;</humanoidTitle>
+	<PawnSpeedMultBeforeCutoff>[*] Скорость ДО предельного возраста</PawnSpeedMultBeforeCutoff>
 	<PawnSpeedMultBeforeCutoffDesc>Aging speed multiplier for humanlike pawns younger than the humanlike age cutoff.</PawnSpeedMultBeforeCutoffDesc>
-	<PawnSpeedMultAfterCutoff>Гуманоиды: Скорость ПОСЛЕ предельного возраста</PawnSpeedMultAfterCutoff>
+	<PawnSpeedMultAfterCutoff>[*] Скорость ПОСЛЕ предельного возраста</PawnSpeedMultAfterCutoff>
 	<PawnSpeedMultAfterCutoffDesc>Aging speed multiplier for humanlike pawns as old or older than the humanlike age cutoff.</PawnSpeedMultAfterCutoffDesc>
-	<PawnCutoffAge>Гуманоиды: Предельный возраст</PawnCutoffAge>
+	<PawnCutoffAge>Предельный возраст</PawnCutoffAge>
 	<PawnCutoffAgeDesc>Age cutoff where humanlike pawns switch from the before aging multiplier to the after aging multiplier.</PawnCutoffAgeDesc>
-
-	<AnimalSpeedMultBeforeCutoff>Животные: Скорость ДО предельного возраста</AnimalSpeedMultBeforeCutoff>
+	
+	<animalsTitle>&lt;color=yellow&gt;Животные:&lt;/color&gt;</animalsTitle>
+	<AnimalSpeedMultBeforeCutoff>[*] Скорость ДО предельного возраста</AnimalSpeedMultBeforeCutoff>
 	<AnimalSpeedMultBeforeCutoffDesc>Aging speed multiplier for animal pawns younger than the animal age cutoff.</AnimalSpeedMultBeforeCutoffDesc>
-	<AnimalSpeedMultAfterCutoff>Животные: Скорость ПОСЛЕ предельного возраста</AnimalSpeedMultAfterCutoff>
+	<AnimalSpeedMultAfterCutoff>[*] Скорость ПОСЛЕ предельного возраста</AnimalSpeedMultAfterCutoff>
 	<AnimalSpeedMultAfterCutoffDesc>Aging speed multiplier for animal pawns as old or older than the animal age cutoff.</AnimalSpeedMultAfterCutoffDesc>
-	<AnimalCutoffAge>Животные: Предельный возраст</AnimalCutoffAge>
+	<AnimalCutoffAge>Предельный возраст</AnimalCutoffAge>
 	<AnimalCutoffAgeDesc>Age cutoff where animal pawns switch from the before aging multiplier to the after aging multiplier.</AnimalCutoffAgeDesc>
-	<RjwPregnancySpeedMult>[RJW] Скорость протекания беременнности(Множитель)</RjwPregnancySpeedMult>
-	<RjwPregnancySpeedMultDesc>Скорость протекания беременнности</RjwPregnancySpeedMultDesc>
-	<RjwInsectEggSpeedMult>[RJW] Скорость протекания беременнности(яйца)(Множитель)</RjwInsectEggSpeedMult>
-	<RjwInsectEggSpeedMultDesc>Скорость вылупления из яиц</RjwInsectEggSpeedMultDesc>
-	<EggHatchSpeedMult>Скорость вылупления из яиц(Множитель)</EggHatchSpeedMult>
+	
+	<RjwPregnancySpeedMult>[*] [RJW] Как быстро родит</RjwPregnancySpeedMult>
+	<RjwPregnancySpeedMultDesc>Как быстро родит человека/животное/механоида</RjwPregnancySpeedMultDesc>
+	<RjwInsectEggSpeedMult>[*] [RJW] Как быстро родит(яйца)</RjwInsectEggSpeedMult>
+	<RjwInsectEggSpeedMultDesc>Как быстро родит яйца насекомых</RjwInsectEggSpeedMultDesc>
+	<EggHatchSpeedMult>[*] Как быстро яйцо вылупится</EggHatchSpeedMult>
 	<EggHatchSpeedMultDesc></EggHatchSpeedMultDesc>
-	<EggLayerSpeedMult>Скорость созревания яиц(Множитель)</EggLayerSpeedMult>
+	<EggLayerSpeedMult>[*] Как быстро пешка снесет яйцо</EggLayerSpeedMult>
 	<EggLayerSpeedMultDesc></EggLayerSpeedMultDesc>
 	
 	
