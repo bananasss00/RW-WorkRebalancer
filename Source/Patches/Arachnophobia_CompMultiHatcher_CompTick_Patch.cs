@@ -16,8 +16,13 @@ namespace WorkRebalancer.Patches
             typeof(Arachnophobia_CompMultiHatcher_CompTick_Patch).GetMethod("CompTick")
         );
 
+        // original rebuilded
         public static bool CompTick(object __instance)
         {
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+                WorkRebalancerMod.Instance.HostileDetected)
+                return true;
+
             CompHatcher_CompTick_Patch.ModifyHatcher(__instance);
             return false;
         }

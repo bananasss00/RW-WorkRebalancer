@@ -21,8 +21,13 @@ namespace WorkRebalancer.Patches
         public static readonly MethodInfo Active = AccessTools.Method("RimWorld.CompEggLayer:get_Active");
         public static readonly MethodInfo ProgressStoppedBecauseUnfertilized = AccessTools.Method("RimWorld.CompEggLayer:get_ProgressStoppedBecauseUnfertilized");
 
+        // original rebuilded
         public static bool CompTick(CompEggLayer __instance)
         {
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+                WorkRebalancerMod.Instance.HostileDetected)
+                return true;
+
             if ((bool)Active.Invoke(__instance, null))
             {
                 float num = 1f / (__instance.Props.eggLayIntervalDays * 60000f);

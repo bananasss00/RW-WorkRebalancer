@@ -35,8 +35,13 @@ namespace WorkRebalancer.Patches
             }
         }
 
+        // original rebuilded
         public static bool CompTick(CompHatcher __instance)
         {
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+                WorkRebalancerMod.Instance.HostileDetected)
+                return true;
+
             if (!__instance.TemperatureDamaged)
             {
                 ModifyHatcher(__instance);

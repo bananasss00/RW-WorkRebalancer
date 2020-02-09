@@ -9,6 +9,7 @@ using Verse.AI;
 
 namespace WorkRebalancer.Patches
 {
+    // Not implemented disable when hostile detected
     public class Pawn_Tick_Patch
     {
         private static readonly MethodInfo RecalculateLifeStageIndex = AccessTools.Method("Verse.Pawn_AgeTracker:RecalculateLifeStageIndex");

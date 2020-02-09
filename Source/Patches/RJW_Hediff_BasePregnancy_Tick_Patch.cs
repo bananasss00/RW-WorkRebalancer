@@ -20,6 +20,11 @@ namespace WorkRebalancer.Patches
         public static void Prefix(ref float ___progress_per_tick, ref float __state)
         {
             __state = ___progress_per_tick; // backup;
+
+            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+                WorkRebalancerMod.Instance.HostileDetected)
+                return;
+
             ___progress_per_tick *= WorkRebalancerMod.Instance.RjwPregnancySpeedMult;
         }
 
