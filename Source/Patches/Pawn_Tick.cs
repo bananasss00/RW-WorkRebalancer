@@ -21,6 +21,10 @@ namespace WorkRebalancer.Patches
 
         public static void multiTick(Pawn __instance)
         {
+            //if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            //    WorkRebalancerMod.Instance.HostileDetected)
+            //    return;
+
             int multiplier = 0; //How much the settings say the pawn's age speed should be multiplied by.
 
             //Determine multiplier

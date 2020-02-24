@@ -85,6 +85,8 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Patches\Arachnophobia_CompMultiHatcher_CompTick_Patch.cs" />
     <Compile Include="Patches\CompEggLayer_CompTick_Patch.cs" />
+    <Compile Include="Patches\Androids_Patch.cs" />
+    <Compile Include="Patches\HSK_CollectJobs_Patch.cs" />
     <Compile Include="Patches\JobDriver_Deconstruct_Patch.cs" />
     <Compile Include="Patches\JobDriver_MineQuarry_Patch.cs" />
     <Compile Include="Patches\CompHatcher_CompTick_Patch.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="Patches\RJW_Hediff_InsectEgg_Tick_Patch.cs" />
     <Compile Include="Patches\SkillRecord_Learn.cs" />
     <Compile Include="Patches\RF_Drill_Patch.cs" />
-    <Compile Include="Patches\HSK_CollectJobs_Patch.cs" />
+    <Compile Include="Patches\HSK_Extractors_Patch.cs" />
     <Compile Include="Patches\JobDriver_Repair.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WorkRebalancer.cs" />

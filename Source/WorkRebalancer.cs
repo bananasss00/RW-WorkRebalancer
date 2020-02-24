@@ -33,7 +33,9 @@ namespace WorkRebalancer
             Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply HSK_Extractors_Patch... Result = {HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
+            Log.Message($"[WorkRebalancer] Apply Androids_Patch... Result = {AndroidsPatched = Androids_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply SkillRecord_Learn_Patch... Result = {SkillRecord_Learn_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply Pawn_Tick_Patch... Result = {Pawn_Tick_Patch.Apply(h)}");
@@ -283,6 +285,14 @@ namespace WorkRebalancer
             {
                 CreateCustomSetting(ref PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100, Tabs.generalTab);
             }
+            if (HSKExtractorsPatched)
+            {
+                CreateCustomSetting(ref PercentOfBaseHSKExtractorsMine, "PercentOfBaseHSKExtractorsMine", 100, Tabs.generalTab);
+            }
+            if (AndroidsPatched)
+            {
+                CreateCustomSetting(ref AndroidsCraftAddX, "AndroidsCraftAddX", 1, Tabs.generalTab);
+            }
 
             // otherTab //
             HugsLabelWtf("boostXpTitle", Tabs.otherTab);
@@ -364,8 +374,10 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBasePlantsGrowDays;
         public SettingHandle<int> RepairJobAddX;
         public SettingHandle<int> PercentOfBaseHSKCollectJobs;
-        public SettingHandle<float> RFDrillJobMultiplier;
+        public SettingHandle<int> AndroidsCraftAddX;
+        public SettingHandle<float> RFDrillJobMultiplier;  
         public SettingHandle<int> PercentOfBaseHSKMineQuarry;
+        public SettingHandle<int> PercentOfBaseHSKExtractorsMine;
         public SettingHandle<float> SkillLearnMultiplier;
         public SettingHandle<int> SkillLearnAllowMax;
 
@@ -384,11 +396,13 @@ namespace WorkRebalancer
 
         public SettingHandle<bool> DebugLog;
 
+        public bool HSKExtractorsPatched { get; }
         public bool HSKCollectJobsPatched { get; }
         public bool RFDrillJobPatched { get; }
         public bool HSKMineQuarryPatched { get; }
         public bool RjwPregnancyPatched { get; }
         public bool RjwInsectEggPatched { get; }
+        public bool AndroidsPatched { get; }
         public bool HostileDetected { get; private set; }
     }
 }
