@@ -43,10 +43,12 @@
 	<RepairJobAddXDesc>Сколько добавляет HP постройке за 1 тик ремонта. По умолчанию 1 HP</RepairJobAddXDesc>
 	<PercentOfBaseHSKCollectJobs>[%] [HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина)</PercentOfBaseHSKCollectJobs>
 	<PercentOfBaseHSKCollectJobsDesc>Процент от базового значения количества работы для сбора песка, торфа, щебня, глины</PercentOfBaseHSKCollectJobsDesc>
-	<AndroidsCraftAddX>[*] [Androids] Печать: Печать андроидов/дроидов</AndroidsCraftAddX>
+	<AndroidsCraftAddX>[*] [Androids] Работа: Печать андроидов/дроидов</AndroidsCraftAddX>
 	<AndroidsCraftAddXDesc>Множитель на базовое значение выполненого крафта/печати за 1 тик</AndroidsCraftAddXDesc>
 	<RFDrillJobMultiplier>[*] [Rimfeller] Работа: Бурение скважины</RFDrillJobMultiplier>
 	<RFDrillJobMultiplierDesc>Множитель на базовое значение выполненого бурения за 1 тик</RFDrillJobMultiplierDesc>
+	<PercentOfBaseHSKExtractorsMine>[%] [HSK] Добывающие установки</PercentOfBaseHSKExtractorsMine>
+	<PercentOfBaseHSKExtractorsMineDesc>Процент от базового значения количества работы для добычи ресурса установкой</PercentOfBaseHSKExtractorsMineDesc>
 	<PercentOfBaseHSKMineQuarry>[%] [HSK-Quarry] Работа в карьере</PercentOfBaseHSKMineQuarry>
 	<PercentOfBaseHSKMineQuarryDesc>Процент от базового значения количества работы для работы в карьере</PercentOfBaseHSKMineQuarryDesc>
 	<SkillLearnMultiplier>[*] Множитель XP</SkillLearnMultiplier>
