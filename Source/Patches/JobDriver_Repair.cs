@@ -20,11 +20,11 @@ namespace WorkRebalancer.Patches
 
         public static bool MakeNewToilsPrefix(JobDriver_Repair __instance, ref IEnumerable<Toil> __result)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return true;
 
-            __result = MakeNewToils(__instance, WorkRebalancerMod.Instance.RepairJobAddX);
+            __result = MakeNewToils(__instance, WorkRebalancerMod.Instance.Prof.RepairJobAddX);
             return false;
         }
 

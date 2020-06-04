@@ -31,27 +31,27 @@ namespace WorkRebalancer.Patches
             if (__instance.RaceProps.Humanlike)
             {
                 //It's a humanlike
-                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.PawnCutoffAge)
+                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.Prof.PawnCutoffAge)
                 {
                     //It's before the cutoff age
-                    multiplier = WorkRebalancerMod.Instance.PawnSpeedMultBeforeCutoff;
+                    multiplier = WorkRebalancerMod.Instance.Prof.PawnSpeedMultBeforeCutoff;
                 } else
                 {
                     //It's after the cutoff age
-                    multiplier = WorkRebalancerMod.Instance.PawnSpeedMultAfterCutoff;
+                    multiplier = WorkRebalancerMod.Instance.Prof.PawnSpeedMultAfterCutoff;
                 }
             } else
             {
                 //It's an animal
-                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.AnimalCutoffAge)
+                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.Prof.AnimalCutoffAge)
                 {
                     //It's before the cutoff age
-                    multiplier = WorkRebalancerMod.Instance.AnimalSpeedMultBeforeCutoff;
+                    multiplier = WorkRebalancerMod.Instance.Prof.AnimalSpeedMultBeforeCutoff;
                 }
                 else
                 {
                     //It's after the cutoff age
-                    multiplier = WorkRebalancerMod.Instance.AnimalSpeedMultAfterCutoff;
+                    multiplier = WorkRebalancerMod.Instance.Prof.AnimalSpeedMultAfterCutoff;
                 }
             }
 

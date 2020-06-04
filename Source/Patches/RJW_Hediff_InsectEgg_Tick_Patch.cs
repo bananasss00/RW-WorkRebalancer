@@ -18,13 +18,13 @@ namespace WorkRebalancer.Patches
 
         public static void Postfix(ref int ___ageTicks)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            if (WorkRebalancerMod.Instance.RjwInsectEggSpeedMult > 1)
+            if (WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult > 1)
             {
-                ___ageTicks += WorkRebalancerMod.Instance.RjwInsectEggSpeedMult - 1; // sub - 1 bcs in orig. Tick() was added 1 tick
+                ___ageTicks += WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult - 1; // sub - 1 bcs in orig. Tick() was added 1 tick
             }
         }
     }

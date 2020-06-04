@@ -24,7 +24,7 @@ namespace WorkRebalancer.Patches
         // original rebuilded
         public static bool CompTick(CompEggLayer __instance)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return true;
 
@@ -38,7 +38,7 @@ namespace WorkRebalancer.Patches
                 }
 
                 float _eggProgress = (float) eggProgress.GetValue(__instance);
-                _eggProgress += num * WorkRebalancerMod.Instance.EggLayerSpeedMult;
+                _eggProgress += num * WorkRebalancerMod.Instance.Prof.EggLayerSpeedMult;
                 if (_eggProgress > 1f)
                 {
                     _eggProgress = 1f;

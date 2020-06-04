@@ -18,11 +18,11 @@ namespace WorkRebalancer.Patches
 
         public static void TotalNeededWorkPostfix(ref float __result)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            float percentOfBase = WorkRebalancerMod.Instance.PercentOfBaseThingStats / 100f;
+            float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseThingStats / 100f;
             __result *= percentOfBase;
         }
     }

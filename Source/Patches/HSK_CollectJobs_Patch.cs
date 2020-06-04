@@ -22,11 +22,11 @@ namespace WorkRebalancer.Patches
 
         public static void HSK_CollectJobPrefix(ref int ticksToCollect)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            float percentOfBase = WorkRebalancerMod.Instance.PercentOfBaseHSKCollectJobs / 100f;
+            float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseHSKCollectJobs / 100f;
             ticksToCollect = (int)(ticksToCollect * percentOfBase);
         }
     }

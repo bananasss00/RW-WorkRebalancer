@@ -27,7 +27,7 @@ namespace WorkRebalancer.Patches
             float gestateProgress = _gestateProgress.GetValue<float>();
 
             //__instance.gestateProgress += num;
-            _gestateProgress.SetValue(gestateProgress + (num * WorkRebalancerMod.Instance.EggHatchSpeedMult));
+            _gestateProgress.SetValue(gestateProgress + (num * WorkRebalancerMod.Instance.Prof.EggHatchSpeedMult));
                 
             if (gestateProgress > 1f)
             {
@@ -38,7 +38,7 @@ namespace WorkRebalancer.Patches
         // original rebuilded
         public static bool CompTick(CompHatcher __instance)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return true;
 

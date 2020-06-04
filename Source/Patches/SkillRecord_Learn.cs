@@ -19,14 +19,14 @@ namespace WorkRebalancer.Patches
 
         public static void LearnPrefix(/*SkillRecord __instance, Pawn ___pawn, */ref float xp, bool direct)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
             // skip negate skill
-            if (xp > 0f && (WorkRebalancerMod.Instance.SkillLearnAllowMax == 0 || xp < WorkRebalancerMod.Instance.SkillLearnAllowMax))
+            if (xp > 0f && (WorkRebalancerMod.Instance.Prof.SkillLearnAllowMax == 0 || xp < WorkRebalancerMod.Instance.Prof.SkillLearnAllowMax))
             {
-                xp *= WorkRebalancerMod.Instance.SkillLearnMultiplier;
+                xp *= WorkRebalancerMod.Instance.Prof.SkillLearnMultiplier;
             }
         }
     }

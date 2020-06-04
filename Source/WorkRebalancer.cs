@@ -56,11 +56,11 @@ namespace WorkRebalancer
                 return;
 
             // check every 7 sec
-            if ((currentTick % CheckHostileDelay) != 0)
+            if ((currentTick % Prof.CheckHostileDelay) != 0)
                 return;
 
             // if option off reset to config
-            if (!RestoreWhenHostileDetected)
+            if (!Prof.RestoreWhenHostileDetected)
             {
                 if (HostileDetected)
                 {
@@ -207,51 +207,73 @@ namespace WorkRebalancer
                 lbl.VisibilityPredicate = () => tabsHandler.Value == tabNames[(int) tab];
         }
 
+        private static string _saveName = "profileName";
         public void InitializeSettings()
         {
             modSettingsPack = HugsLibController.Instance.Settings.GetModSettings("WorkRebalancer");
 
-            SettingHandle<bool> handleReset = modSettingsPack.GetHandle("Reset", "ResetBtn".Translate(), "ResetBtnDesc".Translate(), false);
-            handleReset.CustomDrawer = rect =>
+            // profiles //
+            SettingHandle<bool> profiles = modSettingsPack.GetHandle(
+                "ProfilesDrawer",
+                "Profiles".Translate(),
+                "Profiles".Translate(),
+                false);
+            profiles.CustomDrawerHeight = 40;
+            profiles.CustomDrawer = rect =>
             {
-                if (Widgets.ButtonText(rect, "ResetBtn".Translate()))
-                {
-                    RestoreWhenHostileDetected.ResetToDefault();
-                    CheckHostileDelay.ResetToDefault();
-                    PercentOfBaseResearches.ResetToDefault();
-                    PercentOfBaseTerrains.ResetToDefault();
-                    PercentOfBaseRecipes.ResetToDefault();
-                    PercentOfBaseThingStats.ResetToDefault();
-                    PercentOfBaseThingFactors.ResetToDefault();
-                    PercentOfBasePlantsWork.ResetToDefault();
-                    PercentOfBasePlantsGrowDays.ResetToDefault();
-                    RepairJobAddX.ResetToDefault();
-                    PercentOfBaseHSKCollectJobs?.ResetToDefault();
-                    RFDrillJobMultiplier?.ResetToDefault();
-                    PercentOfBaseHSKMineQuarry?.ResetToDefault();
-                    SkillLearnMultiplier.ResetToDefault();
-                    SkillLearnAllowMax.ResetToDefault();
-
-                    PawnSpeedMultBeforeCutoff.ResetToDefault();
-                    PawnSpeedMultAfterCutoff.ResetToDefault();
-                    PawnCutoffAge.ResetToDefault();
-                    AnimalSpeedMultBeforeCutoff.ResetToDefault();
-                    AnimalSpeedMultAfterCutoff.ResetToDefault();
-                    AnimalCutoffAge.ResetToDefault();
-                    RjwPregnancySpeedMult.ResetToDefault();
-                    RjwInsectEggSpeedMult.ResetToDefault();
-                    EggHatchSpeedMult.ResetToDefault();
-                    EggLayerSpeedMult.ResetToDefault();
-
-                    ApplySettings();
-                    return true;
+                //var lister = new Listing_Standard();
+                //lister.Begin(rect);
+                //lister.verticalSpacing = 1f;
+                IEnumerable<FloatMenuOption> loadMenu() {
+                    foreach (var profName in Profile.GetAllProfiles()) {
+                        yield return new FloatMenuOption(profName, () => { Prof.Load(profName); });
+                    }
+                }
+                IEnumerable<FloatMenuOption> deleteMenu() {
+                    foreach (var profName in Profile.GetAllProfiles()) {
+                        yield return new FloatMenuOption(profName, () => { Profile.Delete(profName); });
+                    }
                 }
 
-                return false;
+                Rect buttonRect1 = new Rect(rect) {height = 20f, width = rect.width / 3},
+                    buttonRect2 = new Rect(buttonRect1) { x = buttonRect1.xMax},
+                    buttonRect3 = new Rect(buttonRect2) { x = buttonRect2.xMax};
+
+                if (Widgets.ButtonText(buttonRect1, "LoadProfileBtn".Translate()))
+                {
+                    Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>(loadMenu())));
+                }
+                if (Widgets.ButtonText(buttonRect2, "DeleteProfileBtn".Translate()))
+                {
+                    Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>(deleteMenu())));
+                }
+                if (Widgets.ButtonText(buttonRect3, "ResetBtn".Translate()))
+                {
+                    Prof.ResetToDefault();
+                    ApplySettings();
+                }
+
+                Rect textRect1 = new Rect(rect) {height = 20f, width = rect.width / 2, y = buttonRect1.yMax},
+                    buttonRect4 = new Rect(textRect1) { x = textRect1.xMax};
+
+                _saveName = Widgets.TextField(textRect1, _saveName);
+                if (Widgets.ButtonText(buttonRect4, "SaveProfileBtn".Translate()))
+                    Prof.Save(_saveName);
+
+                //if (lister.ButtonText("LoadProfileBtn".Translate()))
+                //    Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>(loadMenu())));
+                //if (lister.ButtonText("DeleteProfileBtn".Translate()))
+                //    Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>(deleteMenu())));
+
+                //_saveName = lister.TextEntryLabeled("savename", _saveName);
+                //if (lister.ButtonText("SaveProfileBtn".Translate()))
+                //    Prof.Save(_saveName);
+                //lister.End();
+                return true;
             };
 
-            CreateCustomSetting(ref CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
-            CreateCustomSetting(ref RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
+            CreateCustomSetting(ref Prof.CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
+            CreateCustomSetting(ref Prof.RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
 
             var marks = modSettingsPack.GetHandle("marks", "marksTitle".Translate(), "", "");
             marks.CustomDrawer = rect =>
@@ -266,61 +288,61 @@ namespace WorkRebalancer
             tabsHandler.CustomDrawerHeight = (float)Math.Ceiling((double)tabNames.Length / 2) * 20; 
 
             // generalTab //
-            CreateWorkAmountSetting<ResearchWorkAmount>(ref PercentOfBaseResearches, "PercentOfBaseResearches", Tabs.generalTab);
-            CreateWorkAmountSetting<TerrainWorkAmount>(ref PercentOfBaseTerrains, "PercentOfBaseTerrains", Tabs.generalTab);
-            CreateWorkAmountSetting<RecipeWorkAmount>(ref PercentOfBaseRecipes, "PercentOfBaseRecipes", Tabs.generalTab);
-            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
-            CreateWorkAmountSetting<ThingWorkAmount>(ref PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
-            CreateWorkAmountSetting<PlantWorkAmount>(ref PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
-            CreateCustomSetting(ref RepairJobAddX, "RepairJobAddX", 1, Tabs.generalTab);
+            CreateWorkAmountSetting<ResearchWorkAmount>(ref Prof.PercentOfBaseResearches, "PercentOfBaseResearches", Tabs.generalTab);
+            CreateWorkAmountSetting<TerrainWorkAmount>(ref Prof.PercentOfBaseTerrains, "PercentOfBaseTerrains", Tabs.generalTab);
+            CreateWorkAmountSetting<RecipeWorkAmount>(ref Prof.PercentOfBaseRecipes, "PercentOfBaseRecipes", Tabs.generalTab);
+            CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
+            CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
+            CreateWorkAmountSetting<PlantWorkAmount>(ref Prof.PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
+            CreateCustomSetting(ref Prof.RepairJobAddX, "RepairJobAddX", 1, Tabs.generalTab);
             if (HSKCollectJobsPatched)
             {
-                CreateCustomSetting(ref PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100, Tabs.generalTab);
+                CreateCustomSetting(ref Prof.PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100, Tabs.generalTab);
             }
             if (RFDrillJobPatched)
             {
-                CreateCustomSetting(ref RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f, Tabs.generalTab);
+                CreateCustomSetting(ref Prof.RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f, Tabs.generalTab);
             }
             if (HSKMineQuarryPatched)
             {
-                CreateCustomSetting(ref PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100, Tabs.generalTab);
+                CreateCustomSetting(ref Prof.PercentOfBaseHSKMineQuarry, "PercentOfBaseHSKMineQuarry", 100, Tabs.generalTab);
             }
             if (HSKExtractorsPatched)
             {
-                CreateCustomSetting(ref PercentOfBaseHSKExtractorsMine, "PercentOfBaseHSKExtractorsMine", 100, Tabs.generalTab);
+                CreateCustomSetting(ref Prof.PercentOfBaseHSKExtractorsMine, "PercentOfBaseHSKExtractorsMine", 100, Tabs.generalTab);
             }
             if (AndroidsPatched)
             {
-                CreateCustomSetting(ref AndroidsCraftAddX, "AndroidsCraftAddX", 1, Tabs.generalTab);
+                CreateCustomSetting(ref Prof.AndroidsCraftAddX, "AndroidsCraftAddX", 1, Tabs.generalTab);
             }
 
             // otherTab //
             HugsLabelWtf("boostXpTitle", Tabs.otherTab);
-            CreateCustomSetting(ref SkillLearnMultiplier, "SkillLearnMultiplier", 1f, Tabs.otherTab);
-            CreateCustomSetting(ref SkillLearnAllowMax, "SkillLearnAllowMax", 0, Tabs.otherTab);
+            CreateCustomSetting(ref Prof.SkillLearnMultiplier, "SkillLearnMultiplier", 1f, Tabs.otherTab);
+            CreateCustomSetting(ref Prof.SkillLearnAllowMax, "SkillLearnAllowMax", 0, Tabs.otherTab);
 
             // fast aging //
             HugsLabelWtf("humanoidTitle", Tabs.fastAging);
-            CreateCustomSetting(ref PawnSpeedMultBeforeCutoff, "PawnSpeedMultBeforeCutoff", 1, Tabs.fastAging);
-            CreateCustomSetting(ref PawnSpeedMultAfterCutoff, "PawnSpeedMultAfterCutoff", 1, Tabs.fastAging);
-            CreateCustomSetting(ref PawnCutoffAge, "PawnCutoffAge", 16, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.PawnSpeedMultBeforeCutoff, "PawnSpeedMultBeforeCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.PawnSpeedMultAfterCutoff, "PawnSpeedMultAfterCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.PawnCutoffAge, "PawnCutoffAge", 16, Tabs.fastAging);
 
             HugsLabelWtf("animalsTitle", Tabs.fastAging);
-            CreateCustomSetting(ref AnimalSpeedMultBeforeCutoff, "AnimalSpeedMultBeforeCutoff", 1, Tabs.fastAging);
-            CreateCustomSetting(ref AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1, Tabs.fastAging);
-            CreateCustomSetting(ref AnimalCutoffAge, "AnimalCutoffAge", 1, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.AnimalSpeedMultBeforeCutoff, "AnimalSpeedMultBeforeCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1, Tabs.fastAging);
+            CreateCustomSetting(ref Prof.AnimalCutoffAge, "AnimalCutoffAge", 1, Tabs.fastAging);
 
             //HugsLabelWtf("otherTitle", Tabs.fastAging);
-            CreateWorkAmountSetting<PlantGrowDays>(ref PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays", Tabs.pawnsTab);
-            CreateCustomSetting(ref EggHatchSpeedMult, "EggHatchSpeedMult", 1f, Tabs.pawnsTab);
-            CreateCustomSetting(ref EggLayerSpeedMult, "EggLayerSpeedMult", 1f, Tabs.pawnsTab);
+            CreateWorkAmountSetting<PlantGrowDays>(ref Prof.PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays", Tabs.pawnsTab);
+            CreateCustomSetting(ref Prof.EggHatchSpeedMult, "EggHatchSpeedMult", 1f, Tabs.pawnsTab);
+            CreateCustomSetting(ref Prof.EggLayerSpeedMult, "EggLayerSpeedMult", 1f, Tabs.pawnsTab);
             if (RjwPregnancyPatched)
             {
-                CreateCustomSetting(ref RjwPregnancySpeedMult, "RjwPregnancySpeedMult", 1f, Tabs.pawnsTab);
+                CreateCustomSetting(ref Prof.RjwPregnancySpeedMult, "RjwPregnancySpeedMult", 1f, Tabs.pawnsTab);
             }
             if (RjwInsectEggPatched)
             {
-                CreateCustomSetting(ref RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1, Tabs.pawnsTab);
+                CreateCustomSetting(ref Prof.RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1, Tabs.pawnsTab);
             }
 
             // debug //
@@ -351,48 +373,20 @@ namespace WorkRebalancer
             //    return;
 
             //Loger.Clear();
-            ApplySetting<ResearchWorkAmount>(PercentOfBaseResearches);
-            ApplySetting<TerrainWorkAmount>(PercentOfBaseTerrains);
-            ApplySetting<RecipeWorkAmount>(PercentOfBaseRecipes);
-            ApplySetting<ThingWorkAmount>(PercentOfBaseThingStats, (w, p) => w.SetStats(p));
-            ApplySetting<ThingWorkAmount>(PercentOfBaseThingFactors, (w, p) => w.SetFactors(p));
-            ApplySetting<PlantWorkAmount>(PercentOfBasePlantsWork);
-            ApplySetting<PlantGrowDays>(PercentOfBasePlantsGrowDays);
+            ApplySetting<ResearchWorkAmount>(Prof.PercentOfBaseResearches);
+            ApplySetting<TerrainWorkAmount>(Prof.PercentOfBaseTerrains);
+            ApplySetting<RecipeWorkAmount>(Prof.PercentOfBaseRecipes);
+            ApplySetting<ThingWorkAmount>(Prof.PercentOfBaseThingStats, (w, p) => w.SetStats(p));
+            ApplySetting<ThingWorkAmount>(Prof.PercentOfBaseThingFactors, (w, p) => w.SetFactors(p));
+            ApplySetting<PlantWorkAmount>(Prof.PercentOfBasePlantsWork);
+            ApplySetting<PlantGrowDays>(Prof.PercentOfBasePlantsGrowDays);
             //Loger.Save("dumpRebuilder.txt");
         }
 
         
         public SettingHandle<string> tabsHandler;
-        public SettingHandle<bool> RestoreWhenHostileDetected;
-        public SettingHandle<int> CheckHostileDelay;
-        public SettingHandle<int> PercentOfBaseResearches;
-        public SettingHandle<int> PercentOfBaseTerrains;
-        public SettingHandle<int> PercentOfBaseRecipes;
-        public SettingHandle<int> PercentOfBaseThingStats;
-        public SettingHandle<int> PercentOfBaseThingFactors;
-        public SettingHandle<int> PercentOfBasePlantsWork;
-        public SettingHandle<int> PercentOfBasePlantsGrowDays;
-        public SettingHandle<int> RepairJobAddX;
-        public SettingHandle<int> PercentOfBaseHSKCollectJobs;
-        public SettingHandle<int> AndroidsCraftAddX;
-        public SettingHandle<float> RFDrillJobMultiplier;  
-        public SettingHandle<int> PercentOfBaseHSKMineQuarry;
-        public SettingHandle<int> PercentOfBaseHSKExtractorsMine;
-        public SettingHandle<float> SkillLearnMultiplier;
-        public SettingHandle<int> SkillLearnAllowMax;
-
-        // Fast aging
-        public SettingHandle<int> PawnSpeedMultBeforeCutoff; //Actual value of the pawn speed multiplier before cutoff setting
-        public SettingHandle<int> PawnSpeedMultAfterCutoff; //Actual value of the pawn speed multiplier after cutoff setting
-        public SettingHandle<int> PawnCutoffAge; //Actual value of the pawn cutoff age setting
-        public SettingHandle<int> AnimalSpeedMultBeforeCutoff; //Actual value of the animal speed multiplier before cutoff setting
-        public SettingHandle<int> AnimalSpeedMultAfterCutoff; //Actual value of the animal speed multiplier after cutoff setting
-        public SettingHandle<int> AnimalCutoffAge; //Actual value of the animal cutoff age setting
-        public SettingHandle<float> RjwPregnancySpeedMult;
-        public SettingHandle<int> RjwInsectEggSpeedMult;
-        public SettingHandle<float> EggHatchSpeedMult;
-        public SettingHandle<float> EggLayerSpeedMult;
-
+        
+        public Profile Prof { get; private set; } = new Profile();
 
         public SettingHandle<bool> DebugLog;
 

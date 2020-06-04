@@ -15,8 +15,12 @@
 	
 	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
 	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>
-	<ResetBtn>СБРОСИТЬ ВСЕ</ResetBtn>
+	<ResetBtn>Сброс</ResetBtn>
 	<ResetBtnDesc>Сбросить все настройки работ на их первоначальные значения</ResetBtnDesc>
+	<Profiles>Профили</Profiles>
+	<LoadProfileBtn>Загрузить</LoadProfileBtn>
+	<DeleteProfileBtn>Удалить</DeleteProfileBtn>
+	<SaveProfileBtn>Сохранить</SaveProfileBtn>
 	
 	<RestoreWhenHostileDetected>Восстанавливать настройки при угрозе</RestoreWhenHostileDetected>
 	<RestoreWhenHostileDetectedDesc>Восстанавливать стандартные настройки работ при обнаружении угроз</RestoreWhenHostileDetectedDesc>

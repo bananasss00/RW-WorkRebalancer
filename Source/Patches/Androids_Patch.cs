@@ -30,11 +30,11 @@ namespace WorkRebalancer.Patches
 
         private static void PrintTick(ref int printTick, ref int resTick)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            int sub = WorkRebalancerMod.Instance.AndroidsCraftAddX - 1; // pseudo multiplier, sub 1 original tick
+            int sub = WorkRebalancerMod.Instance.Prof.AndroidsCraftAddX - 1; // pseudo multiplier, sub 1 original tick
             if (sub > 0)
             {
                 printTick -= sub;

@@ -19,7 +19,7 @@ namespace WorkRebalancer.Patches
         // original rebuilded
         public static bool CompTick(object __instance)
         {
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return true;
 

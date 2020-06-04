@@ -21,11 +21,11 @@ namespace WorkRebalancer.Patches
         {
             __state = ___progress_per_tick; // backup;
 
-            if (WorkRebalancerMod.Instance.RestoreWhenHostileDetected &&
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 WorkRebalancerMod.Instance.HostileDetected)
                 return;
 
-            ___progress_per_tick *= WorkRebalancerMod.Instance.RjwPregnancySpeedMult;
+            ___progress_per_tick *= WorkRebalancerMod.Instance.Prof.RjwPregnancySpeedMult;
         }
 
         public static void Postfix(ref float ___progress_per_tick, float __state)
