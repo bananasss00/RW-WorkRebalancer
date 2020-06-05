@@ -30,6 +30,7 @@ namespace WorkRebalancer
 
             HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
+            Log.Message($"[WorkRebalancer] Apply JobDriver_Mine_Patch... Result = {JobDriver_Mine_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
@@ -294,6 +295,7 @@ namespace WorkRebalancer
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
             CreateWorkAmountSetting<PlantWorkAmount>(ref Prof.PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
+            CreateCustomSetting(ref Prof.PercentOfBaseMineJob, "PercentOfBaseMineJob", 100, Tabs.generalTab);
             CreateCustomSetting(ref Prof.RepairJobAddX, "RepairJobAddX", 1, Tabs.generalTab);
             if (HSKCollectJobsPatched)
             {

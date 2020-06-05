@@ -92,6 +92,7 @@
     <Compile Include="Patches\JobDriver_Deconstruct_Patch.cs" />
     <Compile Include="Patches\JobDriver_MineQuarry_Patch.cs" />
     <Compile Include="Patches\CompHatcher_CompTick_Patch.cs" />
+    <Compile Include="Patches\JobDriver_Mine.cs" />
     <Compile Include="Patches\Pawn_Tick.cs" />
     <Compile Include="Patches\RJW_Hediff_BasePregnancy_Tick_Patch.cs" />
     <Compile Include="Patches\RJW_Hediff_InsectEgg_Tick_Patch.cs" />
