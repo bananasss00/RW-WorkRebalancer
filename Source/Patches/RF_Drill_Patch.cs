@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -12,7 +12,7 @@ namespace WorkRebalancer.Patches
 {
     public class RF_Drill_Patch
     {
-        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+        public static bool Apply(Harmony h) => h.PatchPrefix(
             "Rimefeller.JobDriver_SuperviseDrilling:MakeNewToils",
             typeof(RF_Drill_Patch).GetMethod("MakeNewToilsPrefix")
         );

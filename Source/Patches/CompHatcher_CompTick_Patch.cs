@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class CompHatcher_CompTick_Patch
     {
-        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+        public static bool Apply(Harmony h) => h.PatchPrefix(
             "RimWorld.CompHatcher:CompTick",
             typeof(CompHatcher_CompTick_Patch).GetMethod("CompTick")
         );

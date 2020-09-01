@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,7 +14,7 @@ namespace WorkRebalancer.Patches
     {
         private static readonly MethodInfo RecalculateLifeStageIndex = AccessTools.Method("Verse.Pawn_AgeTracker:RecalculateLifeStageIndex");
 
-        public static bool Apply(HarmonyInstance h) => h.PatchPostfix(
+        public static bool Apply(Harmony h) => h.PatchPostfix(
             "Verse.Pawn:Tick",
             typeof(Pawn_Tick_Patch).GetMethod("multiTick")
         );

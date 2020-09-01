@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -13,7 +13,7 @@ namespace WorkRebalancer.Patches
     {
         private static readonly FieldInfo TicksToNextRepair = AccessTools.Field(typeof(JobDriver_Repair), "ticksToNextRepair");
 
-        public static bool Apply(HarmonyInstance h) => h.PatchPostfix(
+        public static bool Apply(Harmony h) => h.PatchPostfix(
             "RimWorld.JobDriver_Mine:ResetTicksToPickHit",
             typeof(JobDriver_Mine_Patch).GetMethod("ResetTicksToPickHitPostfix")
         );

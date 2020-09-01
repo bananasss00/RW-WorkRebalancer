@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class Androids_Patch
     {
-        public static bool Apply(HarmonyInstance h)
+        public static bool Apply(Harmony h)
         {
             bool print = h.PatchPrefix("Androids.Building_AndroidPrinter:Tick", typeof(Androids_Patch).GetMethod("PreTickPrint"));
             bool craft = h.PatchPrefix("Androids.Building_PawnCrafter:Tick", typeof(Androids_Patch).GetMethod("PreTickCraft"));

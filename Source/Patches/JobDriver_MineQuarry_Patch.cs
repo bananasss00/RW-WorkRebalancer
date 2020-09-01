@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class JobDriver_MineQuarry_Patch
     {
-        public static bool Apply(HarmonyInstance h) => h.PatchPostfix(
+        public static bool Apply(Harmony h) => h.PatchPostfix(
             "Quarry.JobDriver_MineQuarry:Mine",
             typeof(JobDriver_MineQuarry_Patch).GetMethod("MinePostfix")
         );

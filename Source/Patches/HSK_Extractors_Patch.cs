@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class HSK_Extractors_Patch
     {
-        public static bool Apply(HarmonyInstance h)
+        public static bool Apply(Harmony h)
         {
             bool extractor = h.PatchPostfix("SK.Building_Extractor:get_MinePerPortionCurrentDifficulty", typeof(HSK_Extractors_Patch).GetMethod("MinePerPortionCurrentDifficulty_Postfix"));
             bool advancedExtractor = h.PatchPostfix("SK.Building_AdvancedExtractor:get_MinePerPortionCurrentDifficulty", typeof(HSK_Extractors_Patch).GetMethod("MinePerPortionCurrentDifficulty_Postfix"));

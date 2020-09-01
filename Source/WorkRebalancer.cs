@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using HugsLib;
 using HugsLib.Settings;
 using Verse;
@@ -28,7 +27,7 @@ namespace WorkRebalancer
             Instance = this;
             workDefDatabase = new List<IWorkAmount>();
 
-            HarmonyInstance h = HarmonyInstance.Create("pirateby.WorkRebalancerMod");
+            var h = new Harmony("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message($"[WorkRebalancer] Apply JobDriver_Mine_Patch... Result = {JobDriver_Mine_Patch.Apply(h)}");
             Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
@@ -120,7 +119,7 @@ namespace WorkRebalancer
             none // not drawing
         }
 
-        private static readonly string[] tabNames = Enum.GetNames(typeof(Tabs)).Where(x => !x.Equals("none")).Select(x => x.Translate()).ToArray();
+        private static readonly string[] tabNames = Enum.GetNames(typeof(Tabs)).Where(x => !x.Equals("none")).Select(x => x.Translate().ToString()).ToArray();
 
         private static readonly Color SelectedOptionColor = new Color(0.5f, 1f, 0.5f, 1f);
 

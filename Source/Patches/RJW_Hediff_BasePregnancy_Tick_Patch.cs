@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class RJW_Hediff_BasePregnancy_Tick_Patch
     {
-        public static bool Apply(HarmonyInstance h)
+        public static bool Apply(Harmony h)
         {
             return h.PatchPrefix("rjw.Hediff_BasePregnancy:Tick", typeof(RJW_Hediff_BasePregnancy_Tick_Patch).GetMethod("Prefix"))
                 && h.PatchPostfix("rjw.Hediff_BasePregnancy:Tick", typeof(RJW_Hediff_BasePregnancy_Tick_Patch).GetMethod("Postfix"));

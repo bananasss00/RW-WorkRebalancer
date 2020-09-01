@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,7 +11,7 @@ namespace WorkRebalancer.Patches
 {
     public class HSK_CollectJobs_Patch
     {
-        public static bool Apply(HarmonyInstance h)
+        public static bool Apply(Harmony h)
         {
             bool sand = h.PatchPrefix("SK.JobDriver_CollectSand:CollectSand", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));
             bool clay = h.PatchPrefix("SK.JobDriver_CollectClay:CollectClay", typeof(HSK_CollectJobs_Patch).GetMethod("HSK_CollectJobPrefix"));

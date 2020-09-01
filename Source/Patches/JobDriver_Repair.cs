@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -13,7 +13,7 @@ namespace WorkRebalancer.Patches
     {
         private static readonly FieldInfo TicksToNextRepair = AccessTools.Field(typeof(JobDriver_Repair), "ticksToNextRepair");
 
-        public static bool Apply(HarmonyInstance h) => h.PatchPrefix(
+        public static bool Apply(Harmony h) => h.PatchPrefix(
             "RimWorld.JobDriver_Repair:MakeNewToils",
             typeof(JobDriver_Repair_Patch).GetMethod("MakeNewToilsPrefix")
         );
