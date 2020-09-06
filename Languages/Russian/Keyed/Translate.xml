@@ -43,6 +43,8 @@
 	<PercentOfBasePlantsGrowDaysDesc>Процент от базового значения скорости роста для растения</PercentOfBasePlantsGrowDaysDesc>
 	
 	<!-- Патчи работ -->
+	<PercentOfBaseFluffyBreakdowns>[%] [FluffyBreakdowns] Обслуживание</PercentOfBaseFluffyBreakdowns>
+	<PercentOfBaseFluffyBreakdownsDesc>Процент от базового значения количества работы</PercentOfBaseFluffyBreakdownsDesc>
 	<PercentOfBaseMineJob>[%] Работа: Шахтерство</PercentOfBaseMineJob>
 	<PercentOfBaseMineJobDesc>Процент от базового значения количества работы</PercentOfBaseMineJobDesc>
 	<RepairJobAddX>[+] Работа: Ремонт построек</RepairJobAddX>

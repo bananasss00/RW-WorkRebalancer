@@ -39,6 +39,8 @@
 	<PercentOfBasePlantsGrowDaysDesc>Процент от базового значения скорости роста для растения</PercentOfBasePlantsGrowDaysDesc>
 	
 	<!-- Патчи работ -->
+	<PercentOfBaseFluffyBreakdowns>[%] [FluffyBreakdowns] Обслуживание</PercentOfBaseFluffyBreakdowns>
+	<PercentOfBaseFluffyBreakdownsDesc>Процент от базового значения количества работы</PercentOfBaseFluffyBreakdownsDesc>
 	<RepairJobAddX>[+] Работа: Ремонт построек</RepairJobAddX>
 	<RepairJobAddXDesc>Сколько добавляет HP постройке за 1 тик ремонта. По умолчанию 1 HP</RepairJobAddXDesc>
 	<PercentOfBaseHSKCollectJobs>[%] [HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина)</PercentOfBaseHSKCollectJobs>

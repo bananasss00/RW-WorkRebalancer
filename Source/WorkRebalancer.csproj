@@ -72,6 +72,7 @@
     <Compile Include="Patches\Androids_Patch.cs" />
     <Compile Include="Patches\HSK_CollectJobs_Patch.cs" />
     <Compile Include="Patches\JobDriver_Deconstruct_Patch.cs" />
+    <Compile Include="Patches\Breakdowns_Maintenance_Patch.cs" />
     <Compile Include="Patches\JobDriver_MineQuarry_Patch.cs" />
     <Compile Include="Patches\CompHatcher_CompTick_Patch.cs" />
     <Compile Include="Patches\JobDriver_Mine.cs" />

@@ -29,21 +29,27 @@ namespace WorkRebalancer
 
             var h = new Harmony("pirateby.WorkRebalancerMod");
             h.PatchAll(Assembly.GetExecutingAssembly());
-            Log.Message($"[WorkRebalancer] Apply JobDriver_Mine_Patch... Result = {JobDriver_Mine_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply JobDriver_Repair_Patch... Result = {JobDriver_Repair_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply JobDriver_Deconstruct_Patch... Result = {JobDriver_Deconstruct_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply HSK_CollectJobs_Patch... Result = {HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply HSK_Extractors_Patch... Result = {HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply RF_Drill_Patch... Result = {RFDrillJobPatched = RF_Drill_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply Androids_Patch... Result = {AndroidsPatched = Androids_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply JobDriver_MineQuarry_Patch... Result = {HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply SkillRecord_Learn_Patch... Result = {SkillRecord_Learn_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply Pawn_Tick_Patch... Result = {Pawn_Tick_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply RJW_Hediff_BasePregnancy_Tick_Patch... Result = {RjwPregnancyPatched = RJW_Hediff_BasePregnancy_Tick_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply RJW_Hediff_InsectEgg_Tick_Patch... Result = {RjwInsectEggPatched = RJW_Hediff_InsectEgg_Tick_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply CompHatcher_CompTick_Patch... Result = {CompHatcher_CompTick_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply Arachnophobia_CompMultiHatcher_CompTick_Patch... Result = {Arachnophobia_CompMultiHatcher_CompTick_Patch.Apply(h)}");
-            Log.Message($"[WorkRebalancer] Apply CompEggLayer_CompTick_Patch... Result = {CompEggLayer_CompTick_Patch.Apply(h)}");
+
+            void applyPatch(string patchName, bool result) {
+                if (!result) Log.Message($"[WorkRebalancer] Apply {patchName}... Result = {result}");
+            }
+
+            applyPatch("JobDriver_Mine_Patch", JobDriver_Mine_Patch.Apply(h));
+            applyPatch("JobDriver_Repair_Patch", JobDriver_Repair_Patch.Apply(h));
+            applyPatch("JobDriver_Deconstruct_Patch", JobDriver_Deconstruct_Patch.Apply(h));
+            applyPatch("HSK_CollectJobs_Patch", HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h));
+            applyPatch("HSK_Extractors_Patch", HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h));
+            applyPatch("RF_Drill_Patch", RFDrillJobPatched = RF_Drill_Patch.Apply(h));
+            applyPatch("Androids_Patch", AndroidsPatched = Androids_Patch.Apply(h));
+            applyPatch("JobDriver_MineQuarry_Patch", HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h));
+            applyPatch("SkillRecord_Learn_Patch", SkillRecord_Learn_Patch.Apply(h));
+            applyPatch("Pawn_Tick_Patch", Pawn_Tick_Patch.Apply(h));
+            applyPatch("RJW_Hediff_BasePregnancy_Tick_Patch", RjwPregnancyPatched = RJW_Hediff_BasePregnancy_Tick_Patch.Apply(h));
+            applyPatch("RJW_Hediff_InsectEgg_Tick_Patch", RjwInsectEggPatched = RJW_Hediff_InsectEgg_Tick_Patch.Apply(h));
+            applyPatch("CompHatcher_CompTick_Patch", CompHatcher_CompTick_Patch.Apply(h));
+            applyPatch("Arachnophobia_CompMultiHatcher_CompTick_Patch", Arachnophobia_CompMultiHatcher_CompTick_Patch.Apply(h));
+            applyPatch("CompEggLayer_CompTick_Patch", CompEggLayer_CompTick_Patch.Apply(h));
+            applyPatch("Breakdowns_Maintenance_Patch", FluffyBreakdownsPatched = Breakdowns_Maintenance_Patch.Apply(h));
         }
 
         public override string ModIdentifier => "WorkRebalancer";
@@ -295,6 +301,10 @@ namespace WorkRebalancer
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
             CreateWorkAmountSetting<PlantWorkAmount>(ref Prof.PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
             CreateCustomSetting(ref Prof.PercentOfBaseMineJob, "PercentOfBaseMineJob", 100, Tabs.generalTab);
+            if (FluffyBreakdownsPatched)
+            {
+                CreateCustomSetting(ref Prof.PercentOfBaseFluffyBreakdowns, "PercentOfBaseFluffyBreakdowns", 100, Tabs.generalTab);
+            }
             CreateCustomSetting(ref Prof.RepairJobAddX, "RepairJobAddX", 1, Tabs.generalTab);
             if (HSKCollectJobsPatched)
             {
@@ -391,6 +401,7 @@ namespace WorkRebalancer
 
         public SettingHandle<bool> DebugLog;
 
+        public bool FluffyBreakdownsPatched { get; }
         public bool HSKExtractorsPatched { get; }
         public bool HSKCollectJobsPatched { get; }
         public bool RFDrillJobPatched { get; }

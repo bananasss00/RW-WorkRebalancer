@@ -90,6 +90,7 @@ namespace WorkRebalancer
             PercentOfBasePlantsWork?.ResetToDefault();
             PercentOfBasePlantsGrowDays?.ResetToDefault();
             PercentOfBaseMineJob?.ResetToDefault();
+            PercentOfBaseFluffyBreakdowns?.ResetToDefault();
             RepairJobAddX?.ResetToDefault();
             PercentOfBaseHSKCollectJobs?.ResetToDefault();
             AndroidsCraftAddX?.ResetToDefault();
@@ -123,6 +124,7 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBasePlantsWork;
         public SettingHandle<int> PercentOfBasePlantsGrowDays;
         public SettingHandle<int> PercentOfBaseMineJob;
+        public SettingHandle<int> PercentOfBaseFluffyBreakdowns;
         public SettingHandle<int> RepairJobAddX;
         public SettingHandle<int> PercentOfBaseHSKCollectJobs;
         public SettingHandle<int> AndroidsCraftAddX;
