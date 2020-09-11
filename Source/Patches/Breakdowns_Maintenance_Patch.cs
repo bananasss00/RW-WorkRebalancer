@@ -49,7 +49,7 @@ namespace WorkRebalancer.Patches
         public static float FullRepairTicks(float value)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return value;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseFluffyBreakdowns / 100f;

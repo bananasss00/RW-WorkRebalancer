@@ -39,7 +39,7 @@ namespace WorkRebalancer.Patches
         public static bool CompTick(CompHatcher __instance)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return true;
 
             if (!__instance.TemperatureDamaged)

@@ -20,7 +20,7 @@ namespace WorkRebalancer.Patches
         public static void LearnPrefix(/*SkillRecord __instance, Pawn ___pawn, */ref float xp, bool direct)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             // skip negate skill

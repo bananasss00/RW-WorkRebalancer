@@ -21,7 +21,7 @@ namespace WorkRebalancer.Patches
         public static void MinePerPortionCurrentDifficulty_Postfix(ref float __result)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseHSKExtractorsMine / 100f;

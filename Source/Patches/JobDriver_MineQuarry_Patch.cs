@@ -19,7 +19,7 @@ namespace WorkRebalancer.Patches
         public static void MinePostfix(ref Toil __result)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseHSKMineQuarry / 100f;

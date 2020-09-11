@@ -19,7 +19,7 @@ namespace WorkRebalancer.Patches
         public static void Postfix(ref int ___ageTicks)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             if (WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult > 1)

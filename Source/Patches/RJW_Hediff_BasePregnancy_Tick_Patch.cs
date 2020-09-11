@@ -22,7 +22,7 @@ namespace WorkRebalancer.Patches
             __state = ___progress_per_tick; // backup;
 
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             ___progress_per_tick *= WorkRebalancerMod.Instance.Prof.RjwPregnancySpeedMult;

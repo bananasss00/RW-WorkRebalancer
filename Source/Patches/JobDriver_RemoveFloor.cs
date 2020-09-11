@@ -19,7 +19,7 @@ namespace WorkRebalancer.Patches
         public static void get_BaseWorkAmount(ref int __result)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseTerrains / 100f;

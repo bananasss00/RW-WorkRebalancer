@@ -20,7 +20,7 @@ namespace WorkRebalancer.Patches
         public static bool CompTick(object __instance)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return true;
 
             CompHatcher_CompTick_Patch.ModifyHatcher(__instance);

@@ -18,41 +18,6 @@ using WorkRebalancer.Patches;
 namespace WorkRebalancer
 {
     /// <summary>
-    /// Hostile spawn checker
-    /// </summary>
-    [HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Spawn), new [] {typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)})]
-    public static class GenSpawn_Spawn_Patch
-    {
-        private static void Postfix(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode, bool respawningAfterLoad)
-        {
-            if (!WorkRebalancerMod.Instance.HostileDetected)
-            {
-                if (newThing.IsHostileThing())
-                {
-                    WorkRebalancerMod.Instance.ApplySettingsDefaults();
-                    WorkRebalancerMod.Instance.HostileDetected = true;
-                    if ( WorkRebalancerMod.Instance.DebugLog)
-                    {
-                        Log.Message($"[WorkRebalancer][Spawn] Apply default 100% settings");
-                    }
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Hostile letters checker
-    /// </summary>
-    [HarmonyPatch(typeof(LetterStack), nameof(LetterStack.ReceiveLetter), new [] {typeof(Letter), typeof(string)})]
-    public static class LetterStack_ReceiveLetter_Patch
-    {
-        private static void Postfix()
-        {
-            WorkRebalancerMod.Instance.UpdateHostileOnMaps();
-        }
-    }
-
-    /// <summary>
     /// Pawns teleporter. Control icon
     /// </summary>
     [HarmonyPatch(typeof(PlaySettings), "DoPlaySettingsGlobalControls")]
@@ -94,7 +59,7 @@ namespace WorkRebalancer
             }
 
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             if (WorkRebalancerMod.Instance.Prof.InstantMovingOnlyColonists && __instance.pawn.Faction != Faction.OfPlayer)
@@ -123,6 +88,7 @@ namespace WorkRebalancer
     {
         public static WorkRebalancerMod Instance { get; private set; }
 
+        public bool SettingsApplied { get; private set; }
         private List<IWorkAmount> workDefDatabase;
         private ModSettingsPack modSettingsPack;
 
@@ -166,44 +132,30 @@ namespace WorkRebalancer
             if (Current.ProgramState != ProgramState.Playing)
                 return;
 
-            // check every 7 sec
-            if ((currentTick % Prof.CheckHostileDelay) != 0)
+            // check every cfg delay
+            if (Prof.CheckHostileDelay != 0 && (currentTick % Prof.CheckHostileDelay) != 0)
                 return;
 
             // if option off reset to config
             if (!Prof.RestoreWhenHostileDetected)
             {
-                if (HostileDetected)
-                {
+                if (!SettingsApplied)
                     ApplySettings();
-                    HostileDetected = false;
-                }
                 return;
             }
 
-            UpdateHostileOnMaps();
-        }
-
-        public void UpdateHostileOnMaps()
-        {
-            bool hostileDetected = Utils.HostileExistsOnMaps();
-            if (HostileDetected && !hostileDetected) // detected hostiles rip
+            HostileHandler.UpdateHostiles();
+            if (!SettingsApplied && !HostileHandler.HostileDetected) // detected hostiles rip
             {
                 ApplySettings();
-                HostileDetected = false;
                 if (DebugLog)
-                {
                     Log.Message($"[WorkRebalancer] Apply configured settings");
-                }
             }
-            else if (!HostileDetected && hostileDetected) // detected new hostiles
+            else if (SettingsApplied && HostileHandler.HostileDetected) // detected new hostiles
             {
                 ApplySettingsDefaults();
-                HostileDetected = true;
                 if (DebugLog)
-                {
                     Log.Message($"[WorkRebalancer] Apply default 100% settings");
-                }
             }
         }
 
@@ -495,7 +447,11 @@ namespace WorkRebalancer
         }
 
         // hostile detected
-        public void ApplySettingsDefaults() => workDefDatabase.ForEach(w => w.Restore());
+        public void ApplySettingsDefaults()
+        {
+            workDefDatabase.ForEach(w => w.Restore());
+            SettingsApplied = false;
+        }
 
         public void ApplySettings()
         {
@@ -511,6 +467,7 @@ namespace WorkRebalancer
             ApplySetting<PlantWorkAmount>(Prof.PercentOfBasePlantsWork);
             ApplySetting<PlantGrowDays>(Prof.PercentOfBasePlantsGrowDays);
             //Loger.Save("dumpRebuilder.txt");
+            SettingsApplied = true;
         }
 
         
@@ -528,6 +485,5 @@ namespace WorkRebalancer
         public bool RjwPregnancyPatched { get; }
         public bool RjwInsectEggPatched { get; }
         public bool AndroidsPatched { get; }
-        public bool HostileDetected { get; set; }
     }
 }

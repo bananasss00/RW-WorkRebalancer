@@ -23,7 +23,7 @@ namespace WorkRebalancer.Patches
         public static void HSK_CollectJobPrefix(ref int ticksToCollect)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseHSKCollectJobs / 100f;

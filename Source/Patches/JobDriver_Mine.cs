@@ -21,7 +21,7 @@ namespace WorkRebalancer.Patches
         public static void ResetTicksToPickHitPostfix(ref int ___ticksToPickHit)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return;
 
             float percentOfBase = WorkRebalancerMod.Instance.Prof.PercentOfBaseMineJob / 100f;

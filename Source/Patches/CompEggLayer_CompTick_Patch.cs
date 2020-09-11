@@ -25,7 +25,7 @@ namespace WorkRebalancer.Patches
         public static bool CompTick(CompEggLayer __instance)
         {
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
-                WorkRebalancerMod.Instance.HostileDetected)
+                HostileHandler.HostileDetected)
                 return true;
 
             if ((bool)Active.Invoke(__instance, null))

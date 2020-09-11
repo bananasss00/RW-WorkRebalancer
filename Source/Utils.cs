@@ -1,10 +1,12 @@
-﻿using RimWorld;
+﻿using System;
+using RimWorld;
 using Verse;
 
 namespace WorkRebalancer
 {
     public static class Utils
     {
+        [Obsolete]
         public static bool HostileExistsOnMaps()
         {
             var maps = Find.Maps;
@@ -44,6 +46,7 @@ namespace WorkRebalancer
             return false;
         }
 
+        [Obsolete]
         public static bool IsHostileThing(this Thing thing, bool checkFogged = true) // skip hostile buildings and downed pawns
         {
             Pawn p = thing as Pawn;
