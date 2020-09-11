@@ -82,6 +82,10 @@ namespace WorkRebalancer
         {
             RestoreWhenHostileDetected?.ResetToDefault();
             CheckHostileDelay?.ResetToDefault();
+            ShowInstantMovingIcon?.ResetToDefault();
+            InstantMovingAutooffOnPause?.ResetToDefault();
+            InstantMovingOnlyColonists?.ResetToDefault();
+            InstantMovingSmoother?.ResetToDefault();
             PercentOfBaseResearches?.ResetToDefault();
             PercentOfBaseTerrains?.ResetToDefault();
             PercentOfBaseRecipes?.ResetToDefault();
@@ -114,6 +118,10 @@ namespace WorkRebalancer
             UpdateHugslibControls();
         }
 
+        public SettingHandle<bool> ShowInstantMovingIcon;
+        public SettingHandle<bool> InstantMovingAutooffOnPause;
+        public SettingHandle<bool> InstantMovingOnlyColonists;
+        public SettingHandle<bool> InstantMovingSmoother;
         public SettingHandle<bool> RestoreWhenHostileDetected;
         public SettingHandle<int> CheckHostileDelay;
         public SettingHandle<int> PercentOfBaseResearches;

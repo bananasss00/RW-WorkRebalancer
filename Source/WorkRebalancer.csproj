@@ -59,6 +59,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="FS.cs" />
     <Compile Include="HarmonyExtensions.cs" />
+    <Compile Include="HostileHandler.cs" />
     <Compile Include="IWorkAmount\PlantGrowDays.cs" />
     <Compile Include="IWorkAmount\PlantWorkAmount.cs" />
     <Compile Include="IWorkAmount\ThingWorkAmount.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Patches\JobDriver_MineQuarry_Patch.cs" />
     <Compile Include="Patches\CompHatcher_CompTick_Patch.cs" />
     <Compile Include="Patches\JobDriver_Mine.cs" />
+    <Compile Include="Patches\JobDriver_RemoveFloor.cs" />
     <Compile Include="Patches\Pawn_Tick.cs" />
     <Compile Include="Patches\RJW_Hediff_BasePregnancy_Tick_Patch.cs" />
     <Compile Include="Patches\RJW_Hediff_InsectEgg_Tick_Patch.cs" />
@@ -99,8 +101,8 @@
       <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\public_access_all\Assembly-CSharp_publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">

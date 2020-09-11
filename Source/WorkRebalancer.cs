@@ -10,11 +10,115 @@ using HugsLib;
 using HugsLib.Settings;
 using Verse;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
+using Verse.AI;
 using WorkRebalancer.Patches;
 
 namespace WorkRebalancer
 {
+    /// <summary>
+    /// Hostile spawn checker
+    /// </summary>
+    [HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Spawn), new [] {typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)})]
+    public static class GenSpawn_Spawn_Patch
+    {
+        private static void Postfix(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode, bool respawningAfterLoad)
+        {
+            if (!WorkRebalancerMod.Instance.HostileDetected)
+            {
+                if (newThing.IsHostileThing())
+                {
+                    WorkRebalancerMod.Instance.ApplySettingsDefaults();
+                    WorkRebalancerMod.Instance.HostileDetected = true;
+                    if ( WorkRebalancerMod.Instance.DebugLog)
+                    {
+                        Log.Message($"[WorkRebalancer][Spawn] Apply default 100% settings");
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Hostile letters checker
+    /// </summary>
+    [HarmonyPatch(typeof(LetterStack), nameof(LetterStack.ReceiveLetter), new [] {typeof(Letter), typeof(string)})]
+    public static class LetterStack_ReceiveLetter_Patch
+    {
+        private static void Postfix()
+        {
+            WorkRebalancerMod.Instance.UpdateHostileOnMaps();
+        }
+    }
+
+    /// <summary>
+    /// Pawns teleporter. Control icon
+    /// </summary>
+    [HarmonyPatch(typeof(PlaySettings), "DoPlaySettingsGlobalControls")]
+    public static class PlaySettings_Patch
+    {
+        private static void Postfix(WidgetRow row, bool worldView)
+        {
+            if (worldView || !WorkRebalancerMod.Instance.Prof.ShowInstantMovingIcon)
+                return;
+
+            row?.ToggleableIcon(ref Pawn_PathFollower_Patch.InstantMoving, FastMovingTex, "FastMovingIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
+
+            if (WorkRebalancerMod.Instance.Prof.InstantMovingAutooffOnPause && Find.TickManager.Paused)
+                Pawn_PathFollower_Patch.InstantMoving = false;
+        }
+
+        public static readonly Texture2D FastMovingTex = ContentFinder<Texture2D>.Get("UIcons/FastMoving");
+    }
+
+    /// <summary>
+    /// Pawns teleporter
+    /// </summary>
+    [HarmonyPatch(typeof(Pawn_PathFollower), nameof(Pawn_PathFollower.PatherTick))]
+    [HarmonyPriority(9999999)]
+    public static class Pawn_PathFollower_Patch
+    {
+        public static bool InstantMoving;
+
+        [HarmonyPrefix]
+        public static void PatherTick(Pawn_PathFollower __instance)
+        {
+            if (!InstantMoving)
+                return;
+
+            if (!WorkRebalancerMod.Instance.Prof.ShowInstantMovingIcon)
+            {
+                InstantMoving = false;
+                return;
+            }
+
+            if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
+                WorkRebalancerMod.Instance.HostileDetected)
+                return;
+
+            if (WorkRebalancerMod.Instance.Prof.InstantMovingOnlyColonists && __instance.pawn.Faction != Faction.OfPlayer)
+                return;
+
+            if (__instance.destination.Cell == IntVec3.Zero)
+                return;
+
+            // move in middle path points
+            if (WorkRebalancerMod.Instance.Prof.InstantMovingSmoother)
+            {
+                __instance.pawn.Position = __instance.nextCell;
+            }
+            // move in end point
+            else
+            {
+                __instance.pawn.Position = __instance.destination.Cell;
+                if (CellFinder.TryFindBestPawnStandCell(__instance.pawn, out IntVec3 intVec, true) && intVec != __instance.pawn.Position)
+                    __instance.pawn.Position = intVec;
+            }
+            __instance.ResetToCurrentPosition();
+        }
+    }
+
     public class WorkRebalancerMod : ModBase
     {
         public static WorkRebalancerMod Instance { get; private set; }
@@ -28,7 +132,7 @@ namespace WorkRebalancer
             workDefDatabase = new List<IWorkAmount>();
 
             var h = new Harmony("pirateby.WorkRebalancerMod");
-            h.PatchAll(Assembly.GetExecutingAssembly());
+            //h.PatchAll(Assembly.GetExecutingAssembly()); // HugsLib auto patch
 
             void applyPatch(string patchName, bool result) {
                 if (!result) Log.Message($"[WorkRebalancer] Apply {patchName}... Result = {result}");
@@ -36,6 +140,7 @@ namespace WorkRebalancer
 
             applyPatch("JobDriver_Mine_Patch", JobDriver_Mine_Patch.Apply(h));
             applyPatch("JobDriver_Repair_Patch", JobDriver_Repair_Patch.Apply(h));
+            applyPatch("JobDriver_RemoveFloor_Patch", JobDriver_RemoveFloor_Patch.Apply(h));
             applyPatch("JobDriver_Deconstruct_Patch", JobDriver_Deconstruct_Patch.Apply(h));
             applyPatch("HSK_CollectJobs_Patch", HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h));
             applyPatch("HSK_Extractors_Patch", HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h));
@@ -76,6 +181,11 @@ namespace WorkRebalancer
                 return;
             }
 
+            UpdateHostileOnMaps();
+        }
+
+        public void UpdateHostileOnMaps()
+        {
             bool hostileDetected = Utils.HostileExistsOnMaps();
             if (HostileDetected && !hostileDetected) // detected hostiles rip
             {
@@ -232,7 +342,11 @@ namespace WorkRebalancer
                 //lister.verticalSpacing = 1f;
                 IEnumerable<FloatMenuOption> loadMenu() {
                     foreach (var profName in Profile.GetAllProfiles()) {
-                        yield return new FloatMenuOption(profName, () => { Prof.Load(profName); });
+                        yield return new FloatMenuOption(profName, () =>
+                        {
+                            _saveName = Path.GetFileNameWithoutExtension(profName);
+                            Prof.Load(profName);
+                        });
                     }
                 }
                 IEnumerable<FloatMenuOption> deleteMenu() {
@@ -280,6 +394,11 @@ namespace WorkRebalancer
 
             CreateCustomSetting(ref Prof.CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
             CreateCustomSetting(ref Prof.RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
+
+            CreateCustomSetting(ref Prof.ShowInstantMovingIcon, "ShowInstantMovingIcon", false, Tabs.none);
+            CreateCustomSetting(ref Prof.InstantMovingSmoother, "InstantMovingSmoother", true, Tabs.none);
+            CreateCustomSetting(ref Prof.InstantMovingOnlyColonists, "InstantMovingOnlyColonists", true, Tabs.none);
+            CreateCustomSetting(ref Prof.InstantMovingAutooffOnPause, "InstantMovingAutooffOnPause", false, Tabs.none);
 
             var marks = modSettingsPack.GetHandle("marks", "marksTitle".Translate(), "", "");
             marks.CustomDrawer = rect =>
@@ -409,6 +528,6 @@ namespace WorkRebalancer
         public bool RjwPregnancyPatched { get; }
         public bool RjwInsectEggPatched { get; }
         public bool AndroidsPatched { get; }
-        public bool HostileDetected { get; private set; }
+        public bool HostileDetected { get; set; }
     }
 }

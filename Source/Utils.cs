@@ -3,7 +3,7 @@ using Verse;
 
 namespace WorkRebalancer
 {
-    public class Utils
+    public static class Utils
     {
         public static bool HostileExistsOnMaps()
         {
@@ -15,8 +15,7 @@ namespace WorkRebalancer
             {
                 foreach (var thing in map.listerThings.AllThings)
                 {
-                    Pawn p = thing as Pawn;
-                    if (thing.HostileTo(Faction.OfPlayer) && thing.def.building == null && (p == null || !p.Downed) && !thing.Fogged()) // skip hostile buildings and downed pawns
+                    if (thing.IsHostileThing())
                     {
                         if (WorkRebalancerMod.Instance.DebugLog)
                         {
@@ -24,10 +23,32 @@ namespace WorkRebalancer
                         }
                         return true;
                     }
+
+                    //if (thing is IActiveDropPod dropPod && (dropPod.Contents?.GetDirectlyHeldThings()?.Any ?? false))
+                    //{
+                    //    foreach (var thing2 in dropPod.Contents.GetDirectlyHeldThings())
+                    //    {
+                    //        if (thing2.IsHostileThing(false))
+                    //        {
+                    //            if (WorkRebalancerMod.Instance.DebugLog)
+                    //            {
+                    //                Log.Message($"Hostile detected(drop pod): {thing.LabelCap}");
+                    //            }
+                    //            return true;
+                    //        }
+                    //    }
+                    //}
                 }
             }
 
             return false;
+        }
+
+        public static bool IsHostileThing(this Thing thing, bool checkFogged = true) // skip hostile buildings and downed pawns
+        {
+            Pawn p = thing as Pawn;
+            return p != null && p.HostileTo(Faction.OfPlayer) && !p.Downed && (!checkFogged || !p.Fogged());
+            //return thing.HostileTo(Faction.OfPlayer) && thing.def.building == null && (p == null || !p.Downed) && (!checkFogged || !thing.Fogged());
         }
     }
 }
