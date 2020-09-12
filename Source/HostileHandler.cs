@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using HarmonyLib;
 using RimWorld;
@@ -12,6 +14,9 @@ namespace WorkRebalancer
     [HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Spawn), new [] {typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)})]
     public static class HostileHandler
     {
+        private const int UPDATE_HOSTILE_LONG = 2;
+        private static int longUpdateCounter;
+
         private static HashSet<Pawn> _hostilePawnsCached = new HashSet<Pawn>();
         public static bool HostileDetected { get; private set; }
 
@@ -40,17 +45,33 @@ namespace WorkRebalancer
         public static void UpdateHostiles()
         {
             _hostilePawnsCached.RemoveWhere(p => !p.Spawned || p.Destroyed || p.Dead);
+
+            if (!HostileDetected/* && longUpdateCounter % UPDATE_HOSTILE_LONG == 0*/)
+                UpdateHostilesLong();
+
+            longUpdateCounter++;
+
             HostileDetected = _hostilePawnsCached.Any(p => p.IsHostilePawn());
 
             if (WorkRebalancerMod.Instance.DebugLog && HostileDetected)
             {
-                Log.Message($"Hostile detected count: {_hostilePawnsCached.Count(p => p.IsHostilePawn())}");
+                Log.Message($"Hostile detected count: {_hostilePawnsCached.Count(p => p.IsHostilePawn())}. List count: {_hostilePawnsCached.Count}");
             }
         }
 
-        public static bool IsHostilePawn(this Pawn p)
+        public static void UpdateHostilesLong()
         {
-            return p.HostileTo(Faction.OfPlayer) && !p.Downed && !p.Fogged();
+            var maps = Find.Maps;
+
+            if (maps == null)
+                return;
+
+            foreach (var map in maps)
+                if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat))
+                    if (threat.Thing is Pawn p)
+                        _hostilePawnsCached.Add(p);
         }
+
+        public static bool IsHostilePawn(this Pawn p) => p.HostileTo(Faction.OfPlayer) && !p.Downed && !p.Fogged();
     }
 }

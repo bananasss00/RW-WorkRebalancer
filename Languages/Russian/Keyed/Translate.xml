@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<FastMovingIconDesc>Мгновенное перемещение по карте(Чит)</FastMovingIconDesc>
-	<ShowInstantMovingIcon>ТЕЛЕПОРТАЦИЯ: Показывать иконку</ShowInstantMovingIcon>
+	<ShowInstantMovingIcon>Показывать иконку</ShowInstantMovingIcon>
 	<ShowInstantMovingIconDesc>Добавляет иконку включения / отключения мгновенного перемещения колонистов</ShowInstantMovingIconDesc>
-	<InstantMovingSmoother>ТЕЛЕПОРТАЦИЯ: Более плавное движение</InstantMovingSmoother>
+	<InstantMovingSmoother>Более плавное движение</InstantMovingSmoother>
 	<InstantMovingSmootherDesc>Путь от точки А до точки Б разбивается на несколько мелких отрезков.
 	Если ВКЛЮЧЕНО, пешка будет двигаться в конечные точки каждого под-отрезка.
 	Если ВЫКЛЮЧЕНО, пешка будет перемещаться сразу в конечную точку Б! (возможно движение сквозь закрытые стены!)</InstantMovingSmootherDesc>
-	<InstantMovingAutooffOnPause>ТЕЛЕПОРТАЦИЯ: Отключать во время паузы</InstantMovingAutooffOnPause>
+	<InstantMovingAutooffOnPause>Отключать во время паузы</InstantMovingAutooffOnPause>
 	<InstantMovingAutooffOnPauseDesc>Отключать когда игра ставится на паузу</InstantMovingAutooffOnPauseDesc>
-	<InstantMovingOnlyColonists>ТЕЛЕПОРТАЦИЯ: Только колонисты игрока</InstantMovingOnlyColonists>
+	<InstantMovingOnlyColonists>Только колонисты игрока</InstantMovingOnlyColonists>
 	<InstantMovingOnlyColonistsDesc>Телепортация будет работать только для колонистов и животных игрока</InstantMovingOnlyColonistsDesc>
 	
 	<!-- Настройки -->
@@ -24,6 +24,7 @@
 	<fastAging>Fast Aging</fastAging>
 	<pawnsTab>Растения/Пешки</pawnsTab>
 	<otherTab>Другое</otherTab>
+	<fastMoving>Телепортация</fastMoving>
 	
 	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
 	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>

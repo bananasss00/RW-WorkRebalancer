@@ -133,6 +133,13 @@ namespace WorkRebalancer
                 return;
 
             // check every cfg delay
+            //if (Prof.RestoreWhenHostileDetected
+            //    && !HostileHandler.HostileDetected
+            //    && Prof.CheckHostileDelay != 0
+            //    && currentTick % (Prof.CheckHostileDelay * 2) == 0)
+            //    HostileHandler.UpdateHostilesLong();
+
+            // check every cfg delay
             if (Prof.CheckHostileDelay != 0 && (currentTick % Prof.CheckHostileDelay) != 0)
                 return;
 
@@ -184,6 +191,7 @@ namespace WorkRebalancer
             pawnsTab,
             fastAging,
             otherTab,
+            fastMoving,
             none // not drawing
         }
 
@@ -347,11 +355,6 @@ namespace WorkRebalancer
             CreateCustomSetting(ref Prof.CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
             CreateCustomSetting(ref Prof.RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
 
-            CreateCustomSetting(ref Prof.ShowInstantMovingIcon, "ShowInstantMovingIcon", false, Tabs.none);
-            CreateCustomSetting(ref Prof.InstantMovingSmoother, "InstantMovingSmoother", true, Tabs.none);
-            CreateCustomSetting(ref Prof.InstantMovingOnlyColonists, "InstantMovingOnlyColonists", true, Tabs.none);
-            CreateCustomSetting(ref Prof.InstantMovingAutooffOnPause, "InstantMovingAutooffOnPause", false, Tabs.none);
-
             var marks = modSettingsPack.GetHandle("marks", "marksTitle".Translate(), "", "");
             marks.CustomDrawer = rect =>
             {
@@ -414,7 +417,7 @@ namespace WorkRebalancer
             CreateCustomSetting(ref Prof.AnimalSpeedMultAfterCutoff, "AnimalSpeedMultAfterCutoff", 1, Tabs.fastAging);
             CreateCustomSetting(ref Prof.AnimalCutoffAge, "AnimalCutoffAge", 1, Tabs.fastAging);
 
-            //HugsLabelWtf("otherTitle", Tabs.fastAging);
+            // pawnsTab //
             CreateWorkAmountSetting<PlantGrowDays>(ref Prof.PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays", Tabs.pawnsTab);
             CreateCustomSetting(ref Prof.EggHatchSpeedMult, "EggHatchSpeedMult", 1f, Tabs.pawnsTab);
             CreateCustomSetting(ref Prof.EggLayerSpeedMult, "EggLayerSpeedMult", 1f, Tabs.pawnsTab);
@@ -426,6 +429,12 @@ namespace WorkRebalancer
             {
                 CreateCustomSetting(ref Prof.RjwInsectEggSpeedMult, "RjwInsectEggSpeedMult", 1, Tabs.pawnsTab);
             }
+
+            // fastMoving //
+            CreateCustomSetting(ref Prof.ShowInstantMovingIcon, "ShowInstantMovingIcon", false, Tabs.fastMoving);
+            CreateCustomSetting(ref Prof.InstantMovingSmoother, "InstantMovingSmoother", true, Tabs.fastMoving);
+            CreateCustomSetting(ref Prof.InstantMovingOnlyColonists, "InstantMovingOnlyColonists", true, Tabs.fastMoving);
+            CreateCustomSetting(ref Prof.InstantMovingAutooffOnPause, "InstantMovingAutooffOnPause", false, Tabs.fastMoving);
 
             // debug //
             DebugLog = modSettingsPack.GetHandle(
