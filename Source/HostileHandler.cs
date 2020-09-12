@@ -8,11 +8,41 @@ using Verse;
 
 namespace WorkRebalancer
 {
-    /// <summary>
-    /// Hostile spawn checker
-    /// </summary>
-    [HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Spawn), new [] {typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)})]
+    // better perfomance, but not instant detect hostile pawn
     public static class HostileHandler
+    {
+        public static bool HostileDetected { get; private set; }
+
+        public static void UpdateHostiles()
+        {
+            var hostile = AnyHostileActive();
+            HostileDetected = hostile != null;
+
+            if (WorkRebalancerMod.Instance.DebugLog && HostileDetected)
+            {
+                Log.Message($"Hostile detected: {hostile.LabelCap}");
+            }
+        }
+
+        public static Pawn AnyHostileActive()
+        {
+            var maps = Find.Maps;
+
+            if (maps != null)
+                foreach (var map in maps)
+                    if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat))
+                        if (threat.Thing is Pawn p)
+                            return p;
+
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Hostile spawn checker, instant detect. Hooked spawn things
+    /// </summary>
+    //[HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Spawn), new [] {typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)})]
+    public static class HostileHandler_SpawnCheck
     {
         private const int UPDATE_HOSTILE_LONG = 2;
         private static int longUpdateCounter;
