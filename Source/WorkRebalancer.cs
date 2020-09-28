@@ -104,6 +104,8 @@ namespace WorkRebalancer
                 if (!result) Log.Message($"[WorkRebalancer] Apply {patchName}... Result = {result}");
             }
 
+            applyPatch("TendPatient_Patch", TendPatient_Patch.Apply(h));
+            applyPatch("CompScanner_Patch", CompScanner_Patch.Apply(h));
             applyPatch("JobDriver_Mine_Patch", JobDriver_Mine_Patch.Apply(h));
             applyPatch("JobDriver_Repair_Patch", JobDriver_Repair_Patch.Apply(h));
             applyPatch("JobDriver_RemoveFloor_Patch", JobDriver_RemoveFloor_Patch.Apply(h));
@@ -111,6 +113,8 @@ namespace WorkRebalancer
             applyPatch("HSK_CollectJobs_Patch", HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h));
             applyPatch("HSK_Extractors_Patch", HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h));
             applyPatch("RF_Drill_Patch", RFDrillJobPatched = RF_Drill_Patch.Apply(h));
+            applyPatch("RF_Crude_Patch", RFCrudeJobPatched = RF_Crude_Patch.Apply(h));
+            applyPatch("RF_Refinery_Patch", RFRefineryJobPatched = RF_Refinery_Patch.Apply(h));
             applyPatch("Androids_Patch", AndroidsPatched = Androids_Patch.Apply(h));
             applyPatch("JobDriver_MineQuarry_Patch", HSKMineQuarryPatched = JobDriver_MineQuarry_Patch.Apply(h));
             applyPatch("SkillRecord_Learn_Patch", SkillRecord_Learn_Patch.Apply(h));
@@ -374,7 +378,9 @@ namespace WorkRebalancer
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
             CreateWorkAmountSetting<PlantWorkAmount>(ref Prof.PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
+            CreateCustomSetting(ref Prof.PercentOfBaseTendPatient, "PercentOfBaseTendPatient", 100, Tabs.generalTab);
             CreateCustomSetting(ref Prof.PercentOfBaseMineJob, "PercentOfBaseMineJob", 100, Tabs.generalTab);
+            CreateCustomSetting(ref Prof.DeepScannerJob, "DeepScannerJob", 1f, Tabs.generalTab);
             if (FluffyBreakdownsPatched)
             {
                 CreateCustomSetting(ref Prof.PercentOfBaseFluffyBreakdowns, "PercentOfBaseFluffyBreakdowns", 100, Tabs.generalTab);
@@ -387,6 +393,14 @@ namespace WorkRebalancer
             if (RFDrillJobPatched)
             {
                 CreateCustomSetting(ref Prof.RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f, Tabs.generalTab);
+            }
+            if (RFCrudeJobPatched)
+            {
+                CreateCustomSetting(ref Prof.RFCrudeJobMultiplier, "RFCrudeJobMultiplier", 1f, Tabs.generalTab);
+            }
+            if (RFRefineryJobPatched)
+            {
+                CreateCustomSetting(ref Prof.RFRefineryJobMultiplier, "RFRefineryJobMultiplier", 1f, Tabs.generalTab);
             }
             if (HSKMineQuarryPatched)
             {
@@ -490,6 +504,8 @@ namespace WorkRebalancer
         public bool HSKExtractorsPatched { get; }
         public bool HSKCollectJobsPatched { get; }
         public bool RFDrillJobPatched { get; }
+        public bool RFCrudeJobPatched { get; }
+        public bool RFRefineryJobPatched { get; }
         public bool HSKMineQuarryPatched { get; }
         public bool RjwPregnancyPatched { get; }
         public bool RjwInsectEggPatched { get; }

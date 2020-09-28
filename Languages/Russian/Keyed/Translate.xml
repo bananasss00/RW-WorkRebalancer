@@ -54,12 +54,16 @@
 	<PercentOfBasePlantsWorkDesc>Процент от базового значения количества работы для работы с растениями</PercentOfBasePlantsWorkDesc>
 	<PercentOfBasePlantsGrowDays>[%] Скорость роста растений</PercentOfBasePlantsGrowDays>
 	<PercentOfBasePlantsGrowDaysDesc>Процент от базового значения скорости роста для растения</PercentOfBasePlantsGrowDaysDesc>
-	
+
 	<!-- Патчи работ -->
+	<PercentOfBaseTendPatient>[%] Скорость лечения</PercentOfBaseTendPatient>
+	<PercentOfBaseTendPatientDesc>Процент от базового значения скорости лечения колонистов</PercentOfBaseTendPatientDesc>
 	<PercentOfBaseFluffyBreakdowns>[%] [FluffyBreakdowns] Обслуживание</PercentOfBaseFluffyBreakdowns>
 	<PercentOfBaseFluffyBreakdownsDesc>Процент от базового значения количества работы</PercentOfBaseFluffyBreakdownsDesc>
 	<PercentOfBaseMineJob>[%] Работа: Шахтерство</PercentOfBaseMineJob>
 	<PercentOfBaseMineJobDesc>Процент от базового значения количества работы</PercentOfBaseMineJobDesc>
+	<DeepScannerJob>[*] Работа: Глубинные сканеры</DeepScannerJob>
+	<DeepScannerJobDesc>Множитель на базовое значение скорости поиска ресурсов</DeepScannerJobDesc>
 	<RepairJobAddX>[+] Работа: Ремонт построек</RepairJobAddX>
 	<RepairJobAddXDesc>Сколько добавляет HP постройке за 1 тик ремонта. По умолчанию 1 HP</RepairJobAddXDesc>
 	<PercentOfBaseHSKCollectJobs>[%] [HSK] Работа: Сбор рес-ов(песок, торф, щебень, глина)</PercentOfBaseHSKCollectJobs>
@@ -68,6 +72,10 @@
 	<AndroidsCraftAddXDesc>Множитель на базовое значение выполненого крафта/печати за 1 тик</AndroidsCraftAddXDesc>
 	<RFDrillJobMultiplier>[*] [Rimfeller] Работа: Бурение скважины</RFDrillJobMultiplier>
 	<RFDrillJobMultiplierDesc>Множитель на базовое значение выполненого бурения за 1 тик</RFDrillJobMultiplierDesc>
+	<RFCrudeJobMultiplier>[*] [Rimfeller] Работа: Переработка топлива</RFCrudeJobMultiplier>
+	<RFCrudeJobMultiplierDesc>Множитель на базовое значение переработки за 1 тик</RFCrudeJobMultiplierDesc>
+	<RFRefineryJobMultiplier>[*] [Rimfeller] Работа: Переработчики</RFRefineryJobMultiplier>
+	<RFRefineryJobMultiplierDesc>Множитель на базовое значение переработки за 1 тик</RFRefineryJobMultiplierDesc>
 	<PercentOfBaseHSKExtractorsMine>[%] [HSK] Добывающие установки</PercentOfBaseHSKExtractorsMine>
 	<PercentOfBaseHSKExtractorsMineDesc>Процент от базового значения количества работы для добычи ресурса установкой</PercentOfBaseHSKExtractorsMineDesc>
 	<PercentOfBaseHSKMineQuarry>[%] [HSK-Quarry] Работа в карьере</PercentOfBaseHSKMineQuarry>
