@@ -25,16 +25,54 @@ namespace WorkRebalancer
     {
         private static void Postfix(WidgetRow row, bool worldView)
         {
-            if (worldView || !WorkRebalancerMod.Instance.Prof.ShowInstantMovingIcon)
+            if (worldView)
                 return;
 
-            row?.ToggleableIcon(ref Pawn_PathFollower_Patch.InstantMoving, FastMovingTex, "FastMovingIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
+            if (WorkRebalancerMod.Instance.Prof.ShowInstantMovingIcon)
+            {
+                row?.ToggleableIcon(ref Pawn_PathFollower_Patch.InstantMoving, FastMovingTex,
+                    "FastMovingIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
 
-            if (WorkRebalancerMod.Instance.Prof.InstantMovingAutooffOnPause && Find.TickManager.Paused)
-                Pawn_PathFollower_Patch.InstantMoving = false;
+                if (WorkRebalancerMod.Instance.Prof.InstantMovingAutooffOnPause && Find.TickManager.Paused)
+                    Pawn_PathFollower_Patch.InstantMoving = false;
+            }
+            if (WorkRebalancerMod.Instance.Prof.ShowFastPawnsTicksIcon)
+            {
+                row?.ToggleableIcon(ref Pawn_Tick_Patch.FastPawnsTicks, FastPawnsTicksTex,
+                    "FastPawnsTicksIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
+            }
+            if (WorkRebalancerMod.Instance.Prof.ShowFastTimeIcon)
+            {
+                row?.ToggleableIcon(ref TickManager_DoSingleTick_Patch.FastTime, FastTimeTex,
+                    "FastTimeIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
+            }
         }
 
+        public static readonly Texture2D FastTimeTex = ContentFinder<Texture2D>.Get("UIcons/FastTime");
+        public static readonly Texture2D FastPawnsTicksTex = ContentFinder<Texture2D>.Get("UIcons/FastPawnsTicks");
         public static readonly Texture2D FastMovingTex = ContentFinder<Texture2D>.Get("UIcons/FastMoving");
+    }
+
+    /// <summary>
+    /// Time booster
+    /// </summary>
+    [HarmonyPatch(typeof(TickManager), nameof(TickManager.DoSingleTick))]
+    public static class TickManager_DoSingleTick_Patch
+    {
+        private static void Postfix(TickManager __instance)
+        {
+            if (!WorkRebalancerMod.Instance.Prof.ShowFastTimeIcon)
+                FastTime = false; // if icon disabled, disable this feature too
+
+            if (FastTime)
+            {
+                int add = WorkRebalancerMod.Instance.Prof.FastTimeMultiplier;
+                if (add > 0)
+                    __instance.ticksGameInt += add;
+            }
+        }
+
+        public static bool FastTime = false;
     }
 
     /// <summary>
@@ -196,6 +234,8 @@ namespace WorkRebalancer
             fastAging,
             otherTab,
             fastMoving,
+            fastTime,
+            fastPawnsTicks,
             none // not drawing
         }
 
@@ -449,6 +489,14 @@ namespace WorkRebalancer
             CreateCustomSetting(ref Prof.InstantMovingSmoother, "InstantMovingSmoother", true, Tabs.fastMoving);
             CreateCustomSetting(ref Prof.InstantMovingOnlyColonists, "InstantMovingOnlyColonists", true, Tabs.fastMoving);
             CreateCustomSetting(ref Prof.InstantMovingAutooffOnPause, "InstantMovingAutooffOnPause", false, Tabs.fastMoving);
+
+            // fastTime //
+            CreateCustomSetting(ref Prof.ShowFastTimeIcon, "ShowFastTimeIcon", false, Tabs.fastTime);
+            CreateCustomSetting(ref Prof.FastTimeMultiplier, "FastTimeMultiplier", 0, Tabs.fastTime);
+
+            // fastPawnsTicks //
+            CreateCustomSetting(ref Prof.ShowFastPawnsTicksIcon, "ShowFastPawnsTicksIcon", false, Tabs.fastPawnsTicks);
+            CreateCustomSetting(ref Prof.FastPawnsTicksMultiplier, "FastPawnsTicksMultiplier", 1, Tabs.fastPawnsTicks);
 
             // debug //
             DebugLog = modSettingsPack.GetHandle(

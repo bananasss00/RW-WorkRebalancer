@@ -1,8 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 	<FastMovingIconDesc>Мгновенное перемещение по карте(Чит)</FastMovingIconDesc>
+	<FastPawnsTicksIconDesc>Ускорение жизненных процессов колонистов(Чит)</FastPawnsTicksIconDesc>
+	<FastTimeIconDesc>Ускорение хода времени(Чит)</FastTimeIconDesc>
+
 	<ShowInstantMovingIcon>Показывать иконку</ShowInstantMovingIcon>
 	<ShowInstantMovingIconDesc>Добавляет иконку включения / отключения мгновенного перемещения колонистов</ShowInstantMovingIconDesc>
+	<ShowFastPawnsTicksIcon>Показывать иконку</ShowFastPawnsTicksIcon>
+	<ShowFastPawnsTicksIconDesc>Добавляет иконку включения / отключения ускорения жизненных циклов колонистов</ShowFastPawnsTicksIconDesc>
+	<ShowFastTimeIcon>Показывать иконку</ShowFastTimeIcon>
+	<ShowFastTimeIconDesc>Добавляет иконку включения / отключения ускорения хода времени</ShowFastTimeIconDesc>
+
 	<InstantMovingSmoother>Более плавное движение</InstantMovingSmoother>
 	<InstantMovingSmootherDesc>Путь от точки А до точки Б разбивается на несколько мелких отрезков.
 	Если ВКЛЮЧЕНО, пешка будет двигаться в конечные точки каждого под-отрезка.
@@ -11,6 +19,12 @@
 	<InstantMovingAutooffOnPauseDesc>Отключать когда игра ставится на паузу</InstantMovingAutooffOnPauseDesc>
 	<InstantMovingOnlyColonists>Только колонисты игрока</InstantMovingOnlyColonists>
 	<InstantMovingOnlyColonistsDesc>Телепортация будет работать только для колонистов и животных игрока</InstantMovingOnlyColonistsDesc>
+
+	<FastTimeMultiplier>[+] Дополнительные игровые тики</FastTimeMultiplier>
+	<FastTimeMultiplierDesc>Добавляет дополнительные тики каждый за каждый игровой тик, 0 = 100% ход времени</FastTimeMultiplierDesc>
+
+	<FastPawnsTicksMultiplier>[*] Множитель тиков колонистов</FastPawnsTicksMultiplier>
+	<FastPawnsTicksMultiplierDesc>Ускорение жизненных процессов колонистов: память, здоровье, нужды и др, 1 = 100%</FastPawnsTicksMultiplierDesc>
 	
 	<!-- Настройки -->
 	<marksTitle>Обозначения</marksTitle>
@@ -25,6 +39,8 @@
 	<pawnsTab>Растения/Пешки</pawnsTab>
 	<otherTab>Другое</otherTab>
 	<fastMoving>Телепортация</fastMoving>
+	<fastTime>Буст времени</fastTime>
+	<fastPawnsTicks>Буст колонистов</fastPawnsTicks>
 	
 	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
 	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>

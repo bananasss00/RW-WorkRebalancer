@@ -83,9 +83,13 @@ namespace WorkRebalancer
             RestoreWhenHostileDetected?.ResetToDefault();
             CheckHostileDelay?.ResetToDefault();
             ShowInstantMovingIcon?.ResetToDefault();
+            ShowFastPawnsTicksIcon?.ResetToDefault();
+            ShowFastTimeIcon?.ResetToDefault();
             InstantMovingAutooffOnPause?.ResetToDefault();
             InstantMovingOnlyColonists?.ResetToDefault();
             InstantMovingSmoother?.ResetToDefault();
+            FastTimeMultiplier?.ResetToDefault();
+            FastPawnsTicksMultiplier?.ResetToDefault();
             PercentOfBaseResearches?.ResetToDefault();
             PercentOfBaseTerrains?.ResetToDefault();
             PercentOfBaseRecipes?.ResetToDefault();
@@ -123,9 +127,13 @@ namespace WorkRebalancer
         }
 
         public SettingHandle<bool> ShowInstantMovingIcon;
+        public SettingHandle<bool> ShowFastPawnsTicksIcon;
+        public SettingHandle<bool> ShowFastTimeIcon;
         public SettingHandle<bool> InstantMovingAutooffOnPause;
         public SettingHandle<bool> InstantMovingOnlyColonists;
         public SettingHandle<bool> InstantMovingSmoother;
+        public SettingHandle<int> FastTimeMultiplier;
+        public SettingHandle<int> FastPawnsTicksMultiplier;
         public SettingHandle<bool> RestoreWhenHostileDetected;
         public SettingHandle<int> CheckHostileDelay;
         public SettingHandle<int> PercentOfBaseResearches;
