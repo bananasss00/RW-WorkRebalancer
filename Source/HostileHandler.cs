@@ -30,7 +30,7 @@ namespace WorkRebalancer
 
             if (maps != null)
                 foreach (var map in maps)
-                    if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat))
+                    if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat, false))
                         if (threat.Thing is Pawn p)
                             return p;
 

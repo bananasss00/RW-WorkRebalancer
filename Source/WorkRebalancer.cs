@@ -36,11 +36,11 @@ namespace WorkRebalancer
                 if (WorkRebalancerMod.Instance.Prof.InstantMovingAutooffOnPause && Find.TickManager.Paused)
                     Pawn_PathFollower_Patch.InstantMoving = false;
             }
-            if (WorkRebalancerMod.Instance.Prof.ShowFastPawnsTicksIcon)
-            {
-                row?.ToggleableIcon(ref Pawn_Tick_Patch.FastPawnsTicks, FastPawnsTicksTex,
-                    "FastPawnsTicksIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
-            }
+            //if (WorkRebalancerMod.Instance.Prof.ShowFastPawnsTicksIcon)
+            //{
+            //    row?.ToggleableIcon(ref Pawn_Tick_Patch.FastPawnsTicks, FastPawnsTicksTex,
+            //        "FastPawnsTicksIconDesc".Translate(), SoundDefOf.Mouseover_ButtonToggle);
+            //}
             if (WorkRebalancerMod.Instance.Prof.ShowFastTimeIcon)
             {
                 row?.ToggleableIcon(ref TickManager_DoSingleTick_Patch.FastTime, FastTimeTex,
@@ -122,6 +122,27 @@ namespace WorkRebalancer
         }
     }
 
+    /// <summary>
+    /// Handle signals for forceNormalSpeed = fast hostile detected
+    /// </summary>
+    [StaticConstructorOnStartup]
+    public static class TimeSlower_Handler_Patch
+    {
+        public static bool SignalForceNormal = false;
+
+        static TimeSlower_Handler_Patch()
+        {
+            var m1 = AccessTools.Method(typeof(TimeSlower), nameof(TimeSlower.SignalForceNormalSpeed));
+            var m2 = AccessTools.Method(typeof(TimeSlower), nameof(TimeSlower.SignalForceNormalSpeedShort));
+            var p = new HarmonyMethod(AccessTools.Method(typeof(TimeSlower_Handler_Patch), nameof(Postfix)));
+            var h = new Harmony("pirateby.WorkRebalancerMod");
+            h.Patch(m1, postfix: p);
+            h.Patch(m2, postfix: p);
+        }
+
+        public static void Postfix() => SignalForceNormal = true;
+    }
+
     public class WorkRebalancerMod : ModBase
     {
         public static WorkRebalancerMod Instance { get; private set; }
@@ -150,6 +171,7 @@ namespace WorkRebalancer
             applyPatch("JobDriver_Deconstruct_Patch", JobDriver_Deconstruct_Patch.Apply(h));
             applyPatch("HSK_CollectJobs_Patch", HSKCollectJobsPatched = HSK_CollectJobs_Patch.Apply(h));
             applyPatch("HSK_Extractors_Patch", HSKExtractorsPatched = HSK_Extractors_Patch.Apply(h));
+            applyPatch("RimatomicsResearch_Patch", RAtomicsResearchPatched = RimatomicsResearch_Patch.Apply(h));
             applyPatch("RF_Drill_Patch", RFDrillJobPatched = RF_Drill_Patch.Apply(h));
             applyPatch("RF_Crude_Patch", RFCrudeJobPatched = RF_Crude_Patch.Apply(h));
             applyPatch("RF_Refinery_Patch", RFRefineryJobPatched = RF_Refinery_Patch.Apply(h));
@@ -181,9 +203,11 @@ namespace WorkRebalancer
             //    && currentTick % (Prof.CheckHostileDelay * 2) == 0)
             //    HostileHandler.UpdateHostilesLong();
 
-            // check every cfg delay
-            if (Prof.CheckHostileDelay != 0 && (currentTick % Prof.CheckHostileDelay) != 0)
+            // check every cfg delay or if was signal to force normal speed
+            if (Prof.CheckHostileDelay != 0 && (currentTick % Prof.CheckHostileDelay) != 0 && !TimeSlower_Handler_Patch.SignalForceNormal)
                 return;
+
+            TimeSlower_Handler_Patch.SignalForceNormal = false;
 
             // if option off reset to config
             if (!Prof.RestoreWhenHostileDetected)
@@ -203,6 +227,7 @@ namespace WorkRebalancer
             else if (SettingsApplied && HostileHandler.HostileDetected) // detected new hostiles
             {
                 ApplySettingsDefaults();
+                Pawn_PathFollower_Patch.InstantMoving = false;
                 if (DebugLog)
                     Log.Message($"[WorkRebalancer] Apply default 100% settings");
             }
@@ -235,7 +260,7 @@ namespace WorkRebalancer
             otherTab,
             fastMoving,
             fastTime,
-            fastPawnsTicks,
+            //fastPawnsTicks,
             none // not drawing
         }
 
@@ -430,6 +455,10 @@ namespace WorkRebalancer
             {
                 CreateCustomSetting(ref Prof.PercentOfBaseHSKCollectJobs, "PercentOfBaseHSKCollectJobs", 100, Tabs.generalTab);
             }
+            if (RAtomicsResearchPatched)
+            {
+                CreateCustomSetting(ref Prof.RAtomicsResearchMultiplier, "RAtomicsResearchMultiplier", 1f, Tabs.generalTab);
+            }
             if (RFDrillJobPatched)
             {
                 CreateCustomSetting(ref Prof.RFDrillJobMultiplier, "RFDrillJobMultiplier", 1f, Tabs.generalTab);
@@ -495,8 +524,8 @@ namespace WorkRebalancer
             CreateCustomSetting(ref Prof.FastTimeMultiplier, "FastTimeMultiplier", 0, Tabs.fastTime);
 
             // fastPawnsTicks //
-            CreateCustomSetting(ref Prof.ShowFastPawnsTicksIcon, "ShowFastPawnsTicksIcon", false, Tabs.fastPawnsTicks);
-            CreateCustomSetting(ref Prof.FastPawnsTicksMultiplier, "FastPawnsTicksMultiplier", 1, Tabs.fastPawnsTicks);
+            // CreateCustomSetting(ref Prof.ShowFastPawnsTicksIcon, "ShowFastPawnsTicksIcon", false, Tabs.fastPawnsTicks);
+            // CreateCustomSetting(ref Prof.FastPawnsTicksMultiplier, "FastPawnsTicksMultiplier", 1, Tabs.fastPawnsTicks);
 
             // debug //
             DebugLog = modSettingsPack.GetHandle(
@@ -551,6 +580,7 @@ namespace WorkRebalancer
         public bool FluffyBreakdownsPatched { get; }
         public bool HSKExtractorsPatched { get; }
         public bool HSKCollectJobsPatched { get; }
+        public bool RAtomicsResearchPatched { get; }
         public bool RFDrillJobPatched { get; }
         public bool RFCrudeJobPatched { get; }
         public bool RFRefineryJobPatched { get; }

@@ -69,6 +69,7 @@
     <Compile Include="IWorkAmount\IWorkAmount.cs" />
     <Compile Include="Loger.cs" />
     <Compile Include="Patches\Arachnophobia_CompMultiHatcher_CompTick_Patch.cs" />
+    <Compile Include="Patches\RimatomicsResearch_Patch.cs" />
     <Compile Include="Patches\TendPatient_Patch.cs" />
     <Compile Include="Patches\CompEggLayer_CompTick_Patch.cs" />
     <Compile Include="Patches\Androids_Patch.cs" />

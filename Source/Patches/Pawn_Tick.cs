@@ -19,14 +19,19 @@ namespace WorkRebalancer.Patches
 
         public static bool Apply(Harmony h)
         {
-            var hinttick = AccessTools.Method("Verse.Gen:IsHashIntervalTick", new [] {typeof(Thing), typeof(int)});
-            if (hinttick == null)
-                return false;
+            // PawnTicksBooster Bugged!//
 
-            h.Patch(hinttick, prefix: new HarmonyMethod(typeof(Pawn_Tick_Patch), nameof(IsHashIntervalTick)) { priority = Priority.First});
+            // var hinttick = AccessTools.Method("Verse.Gen:IsHashIntervalTick", new [] {typeof(Thing), typeof(int)});
+            // if (hinttick == null)
+            //     return false;
+            //
+            // h.Patch(hinttick, prefix: new HarmonyMethod(typeof(Pawn_Tick_Patch), nameof(IsHashIntervalTick)) { priority = Priority.First});
+            //
+            // return h.PatchPrefix("Verse.Pawn:Tick", typeof(Pawn_Tick_Patch).GetMethod(nameof(PawnTickPrefix)), Priority.First) &&
+            //     h.PatchPostfix("Verse.Pawn:Tick", typeof(Pawn_Tick_Patch).GetMethod(nameof(PawnTickPostfix)), Priority.Last);
 
-            return h.PatchPrefix("Verse.Pawn:Tick", typeof(Pawn_Tick_Patch).GetMethod(nameof(PawnTickPrefix)), Priority.First) &&
-                h.PatchPostfix("Verse.Pawn:Tick", typeof(Pawn_Tick_Patch).GetMethod(nameof(PawnTickPostfix)), Priority.Last);
+
+            return h.PatchPostfix("Verse.Pawn:Tick", typeof(Pawn_Tick_Patch).GetMethod(nameof(PawnTickPostfix)), Priority.Last);
         }
 
         /// <summary>
