@@ -22,11 +22,24 @@
 		</li>
 	</modDependencies>
 	<loadAfter>
-		<li>Ludeon.RimWorld</li>
-		<li>Ludeon.RimWorld.Royalty</li>
 		<li>brrainz.harmony</li>
 		<li>UnlimitedHugs.HugsLib</li>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
 	</loadAfter>
-    <description>Required HugsLib</description>
+    <description>Mod for rebalance all recipes / works amount and etc... at runtime. Check mod settings.
+	
+This mod for debug purposes, speedrun or tweak some categories in regular game.
+
+Tweakable categories:
+-Researches
+-Recipes
+-Construction speed
+-Works speed
+-Growth speed of plants
+-Another
+
+Issues: https://github.com/bananasss00/RW-WorkRebalancer/issues
+</description>
 
 </ModMetaData>

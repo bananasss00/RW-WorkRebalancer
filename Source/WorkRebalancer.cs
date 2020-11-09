@@ -421,7 +421,7 @@ namespace WorkRebalancer
                 return true;
             };
 
-            CreateCustomSetting(ref Prof.CheckHostileDelay, "CheckHostileDelay", 420, Tabs.none);
+            CreateCustomSetting(ref Prof.CheckHostileDelay, "CheckHostileDelay", 60, Tabs.none);
             CreateCustomSetting(ref Prof.RestoreWhenHostileDetected, "RestoreWhenHostileDetected", true, Tabs.none);
 
             var marks = modSettingsPack.GetHandle("marks", "marksTitle".Translate(), "", "");

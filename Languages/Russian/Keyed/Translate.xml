@@ -38,9 +38,9 @@
 	<fastAging>Fast Aging</fastAging>
 	<pawnsTab>Растения/Пешки</pawnsTab>
 	<otherTab>Другое</otherTab>
-	<fastMoving>Телепортация</fastMoving>
-	<fastTime>Буст времени</fastTime>
-	<fastPawnsTicks>Буст колонистов</fastPawnsTicks>
+	<fastMoving>Перемещение(Чит)</fastMoving>
+	<fastTime>Буст времени(Чит)</fastTime>
+	<fastPawnsTicks>Буст колонистов(Чит)</fastPawnsTicks>
 	
 	<RebalanceBtn>ПРИМЕНИТЬ</RebalanceBtn>
 	<RebalanceBtnDesc>Применить настройки работ</RebalanceBtnDesc>
@@ -54,7 +54,7 @@
 	<RestoreWhenHostileDetected>Восстанавливать настройки при угрозе</RestoreWhenHostileDetected>
 	<RestoreWhenHostileDetectedDesc>Восстанавливать стандартные настройки работ при обнаружении угроз</RestoreWhenHostileDetectedDesc>
 	<CheckHostileDelay>Задержка между проверками на угрозы в тиках</CheckHostileDelay>
-	<CheckHostileDelayDesc>Задержка между проверками на угрозы в тиках. 420 тиков ~= 7 секунд на 1й скорости</CheckHostileDelayDesc>
+	<CheckHostileDelayDesc>Задержка между проверками на угрозы в тиках. 60 тиков ~= 1 секунд на 1й скорости</CheckHostileDelayDesc>
 	
 	<PercentOfBaseResearches>[%] Исследования</PercentOfBaseResearches>
 	<PercentOfBaseResearchesDesc>Процент от базового значения для исследований</PercentOfBaseResearchesDesc>
