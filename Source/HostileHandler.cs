@@ -5,6 +5,7 @@ using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace WorkRebalancer
 {
@@ -30,11 +31,36 @@ namespace WorkRebalancer
 
             if (maps != null)
                 foreach (var map in maps)
-                    if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat, false))
+                    if (HostileHandler.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat, false))
                         if (threat.Thing is Pawn p)
                             return p;
 
             return null;
+        }
+
+        // this method not exist in RW 2723. Use local copy
+        public static bool AnyHostileActiveThreatTo(Map map, Faction faction, out IAttackTarget threat, bool countDormantPawnsAsHostile = false)
+        {
+            foreach (IAttackTarget attackTarget in map.attackTargetsCache.TargetsHostileToFaction(faction))
+            {
+                if (GenHostility.IsActiveThreatTo(attackTarget, faction))
+                {
+                    threat = attackTarget;
+                    return true;
+                }
+                Pawn pawn;
+                if (countDormantPawnsAsHostile && attackTarget.Thing.HostileTo(faction) && !attackTarget.Thing.Fogged() && !attackTarget.ThreatDisabled(null) && (pawn = (attackTarget.Thing as Pawn)) != null)
+                {
+                    CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
+                    if (comp != null && !comp.Awake)
+                    {
+                        threat = attackTarget;
+                        return true;
+                    }
+                }
+            }
+            threat = null;
+            return false;
         }
     }
 
@@ -97,7 +123,7 @@ namespace WorkRebalancer
                 return;
 
             foreach (var map in maps)
-                if (GenHostility.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat))
+                if (HostileHandler.AnyHostileActiveThreatTo(map, Faction.OfPlayer, out var threat))
                     if (threat.Thing is Pawn p)
                         _hostilePawnsCached.Add(p);
         }
