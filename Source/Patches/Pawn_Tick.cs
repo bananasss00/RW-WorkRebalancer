@@ -12,7 +12,6 @@ namespace WorkRebalancer.Patches
     // Not implemented disable when hostile detected
     public class Pawn_Tick_Patch
     {
-        private static readonly MethodInfo RecalculateLifeStageIndex = AccessTools.Method("Verse.Pawn_AgeTracker:RecalculateLifeStageIndex");
         private static Pawn _pawnTickInstance = null;
         public static bool FastPawnsTicks = false;
 
@@ -73,13 +72,15 @@ namespace WorkRebalancer.Patches
             //    WorkRebalancerMod.Instance.HostileDetected)
             //    return;
 
-            int multiplier = 0; //How much the settings say the pawn's age speed should be multiplied by.
+            var ageTracker = __instance.ageTracker;
+            int multiplier; //How much the settings say the pawn's age speed should be multiplied by.
+            int biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
 
             //Determine multiplier
             if (__instance.RaceProps.Humanlike)
             {
                 //It's a humanlike
-                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.Prof.PawnCutoffAge)
+                if (biologicalYears < WorkRebalancerMod.Instance.Prof.PawnCutoffAge)
                 {
                     //It's before the cutoff age
                     multiplier = WorkRebalancerMod.Instance.Prof.PawnSpeedMultBeforeCutoff;
@@ -91,7 +92,7 @@ namespace WorkRebalancer.Patches
             } else
             {
                 //It's an animal
-                if (__instance.ageTracker.AgeBiologicalYears < WorkRebalancerMod.Instance.Prof.AnimalCutoffAge)
+                if (biologicalYears < WorkRebalancerMod.Instance.Prof.AnimalCutoffAge)
                 {
                     //It's before the cutoff age
                     multiplier = WorkRebalancerMod.Instance.Prof.AnimalSpeedMultBeforeCutoff;
@@ -107,19 +108,47 @@ namespace WorkRebalancer.Patches
             //Run extra aging.
             if (multiplier == 0) //Aging disabled, reverse every tick of age increase
             {
-                __instance.ageTracker.AgeBiologicalTicks += -1; //This theoretically could cause a birthday every tick if the multiplier is set to 0 on the tick before a birthday. It would be better as a prefix patch that prevents AgeTick from even running, but that's a lot of work for a super edge case.
+                // mainf increase, postfix decrease = freezy value
+                ageTracker.ageBiologicalTicksInt -= 1; //This theoretically could cause a birthday every tick if the multiplier is set to 0 on the tick before a birthday. It would be better as a prefix patch that prevents AgeTick from even running, but that's a lot of work for a super edge case.
             }
             else
             {
-                int age = __instance.ageTracker.AgeBiologicalYears; // if age changed recalc
-                
-                for (int additionalTick = 0; additionalTick < multiplier - 1; additionalTick++) //Repeat the same AgeTick method until it hase been done speedMult times this tick
+                int age = biologicalYears;
+
+                //long nextBirthday = (int)(ageTracker.ageBiologicalTicksInt / 3600000L) + 3600000L;
+                ageTracker.ageBiologicalTicksInt += multiplier - 1;
+                biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
+
+                if (Find.TickManager.TicksGame >= ageTracker.nextLifeStageChangeTick || biologicalYears != age) // vanilla code + if age changed recalc
+                    ageTracker.RecalculateLifeStageIndex();
+                if (biologicalYears != age)
                 {
-                    __instance.ageTracker.AgeTick();
+                    ageTracker.BirthdayBiological();
+                    //if (WorkRebalancerMod.Instance.DebugLog)
+                    //    Log.Message($"[WorkRebalancer] {__instance.Label} BirthdayBiological {biologicalYears}y.o.");
                 }
 
-                if (__instance.ageTracker.AgeBiologicalYears != age)
-                    RecalculateLifeStageIndex.Invoke(__instance.ageTracker, null);
+                //public void AgeTick()
+                //{
+                //    this.ageBiologicalTicksInt += 1L;
+                //    if ((long)Find.TickManager.TicksGame >= this.nextLifeStageChangeTick)
+                //    {
+                //        this.RecalculateLifeStageIndex();
+                //    }
+                //    if (this.ageBiologicalTicksInt % 3600000L == 0L)
+                //    {
+                //        this.BirthdayBiological();
+                //    }
+                //}
+
+                //for (int additionalTick = 0; additionalTick < multiplier - 1; additionalTick++) //Repeat the same AgeTick method until it hase been done speedMult times this tick
+                //{
+                //    __instance.ageTracker.AgeTick();
+                //}
+
+                
+                //if (biologicalYears != age) // if age changed recalc
+                //    __instance.ageTracker.RecalculateLifeStageIndex();
             }
         }
     }
