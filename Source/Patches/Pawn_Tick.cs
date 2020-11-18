@@ -14,6 +14,7 @@ namespace WorkRebalancer.Patches
     {
         private static Pawn _pawnTickInstance = null;
         public static bool FastPawnsTicks = false;
+        public const int UpdateIntervalTick = 180;
 
 
         public static bool Apply(Harmony h)
@@ -72,6 +73,9 @@ namespace WorkRebalancer.Patches
             //    WorkRebalancerMod.Instance.HostileDetected)
             //    return;
 
+            if (!__instance.IsHashIntervalTick(UpdateIntervalTick))
+                return;
+
             var ageTracker = __instance.ageTracker;
             int multiplier; //How much the settings say the pawn's age speed should be multiplied by.
             int biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
@@ -116,7 +120,7 @@ namespace WorkRebalancer.Patches
                 int age = biologicalYears;
 
                 //long nextBirthday = (int)(ageTracker.ageBiologicalTicksInt / 3600000L) + 3600000L;
-                ageTracker.ageBiologicalTicksInt += multiplier - 1;
+                ageTracker.ageBiologicalTicksInt += (multiplier - 1) * UpdateIntervalTick; // delayed add additional ticks
                 biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
 
                 if (Find.TickManager.TicksGame >= ageTracker.nextLifeStageChangeTick || biologicalYears != age) // vanilla code + if age changed recalc
