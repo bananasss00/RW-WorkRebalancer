@@ -164,6 +164,7 @@ namespace WorkRebalancer
             }
 
             applyPatch("TendPatient_Patch", TendPatient_Patch.Apply(h));
+            applyPatch("JobDriver_WearApparel_Patch", JobDriver_WearApparel_Patch.Apply(h));
             applyPatch("CompScanner_Patch", CompScanner_Patch.Apply(h));
             applyPatch("JobDriver_Mine_Patch", JobDriver_Mine_Patch.Apply(h));
             applyPatch("JobDriver_Repair_Patch", JobDriver_Repair_Patch.Apply(h));
@@ -443,6 +444,7 @@ namespace WorkRebalancer
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingStats, "PercentOfBaseThingStats", Tabs.generalTab, (w, p) => w.SetStats(p));
             CreateWorkAmountSetting<ThingWorkAmount>(ref Prof.PercentOfBaseThingFactors, "PercentOfBaseThingFactors", Tabs.generalTab, (w, p) => w.SetFactors(p));
             CreateWorkAmountSetting<PlantWorkAmount>(ref Prof.PercentOfBasePlantsWork, "PercentOfBasePlantsWork", Tabs.generalTab);
+            CreateCustomSetting(ref Prof.PercentOfBaseWearApparel, "PercentOfBaseWearApparel", 100, Tabs.generalTab);
             CreateCustomSetting(ref Prof.PercentOfBaseTendPatient, "PercentOfBaseTendPatient", 100, Tabs.generalTab);
             CreateCustomSetting(ref Prof.PercentOfBaseMineJob, "PercentOfBaseMineJob", 100, Tabs.generalTab);
             CreateCustomSetting(ref Prof.DeepScannerJob, "DeepScannerJob", 1f, Tabs.generalTab);

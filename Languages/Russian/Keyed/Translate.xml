@@ -74,6 +74,8 @@
 	<!-- Патчи работ -->
 	<PercentOfBaseTendPatient>[%] Скорость лечения</PercentOfBaseTendPatient>
 	<PercentOfBaseTendPatientDesc>Процент от базового значения скорости лечения колонистов</PercentOfBaseTendPatientDesc>
+	<PercentOfBaseWearApparel>[%] Скорость переодевания</PercentOfBaseWearApparel>
+	<PercentOfBaseWearApparelDesc>Процент от базового значения скорости переодевания колонистов</PercentOfBaseWearApparelDesc>
 	<PercentOfBaseFluffyBreakdowns>[%] [FluffyBreakdowns] Обслуживание</PercentOfBaseFluffyBreakdowns>
 	<PercentOfBaseFluffyBreakdownsDesc>Процент от базового значения количества работы</PercentOfBaseFluffyBreakdownsDesc>
 	<PercentOfBaseMineJob>[%] Работа: Шахтерство</PercentOfBaseMineJob>

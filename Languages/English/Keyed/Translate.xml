@@ -74,6 +74,8 @@
 	<!-- Патчи работ -->
 	<PercentOfBaseTendPatient>[%] Speed of treatment</PercentOfBaseTendPatient>
 	<PercentOfBaseTendPatientDesc>Percent of the base value of the treatment</PercentOfBaseTendPatientDesc>
+	<PercentOfBaseWearApparel>[%] Speed of wear apparel</PercentOfBaseWearApparel>
+	<PercentOfBaseWearApparelDesc>Percent of the base value of the wear apparel</PercentOfBaseWearApparelDesc>
 	<PercentOfBaseFluffyBreakdowns>[%] [FluffyBreakdowns] Maintenance</PercentOfBaseFluffyBreakdowns>
 	<PercentOfBaseFluffyBreakdownsDesc>Percent of the base value of the maintenance buildings</PercentOfBaseFluffyBreakdownsDesc>
 	<PercentOfBaseMineJob>[%] Work: Mining</PercentOfBaseMineJob>

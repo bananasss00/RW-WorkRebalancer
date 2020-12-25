@@ -99,6 +99,7 @@ namespace WorkRebalancer
             PercentOfBasePlantsGrowDays?.ResetToDefault();
             PercentOfBaseMineJob?.ResetToDefault();
             PercentOfBaseTendPatient?.ResetToDefault();
+            PercentOfBaseWearApparel?.ResetToDefault();
             DeepScannerJob?.ResetToDefault();
             PercentOfBaseFluffyBreakdowns?.ResetToDefault();
             RepairJobAddX?.ResetToDefault();
@@ -146,6 +147,7 @@ namespace WorkRebalancer
         public SettingHandle<int> PercentOfBasePlantsGrowDays;
         public SettingHandle<int> PercentOfBaseMineJob;
         public SettingHandle<int> PercentOfBaseTendPatient;
+        public SettingHandle<int> PercentOfBaseWearApparel;
         public SettingHandle<float> DeepScannerJob;  
         public SettingHandle<int> PercentOfBaseFluffyBreakdowns;
         public SettingHandle<int> RepairJobAddX;
