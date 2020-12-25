@@ -16,11 +16,6 @@ namespace WorkRebalancer.Patches
             typeof(CompEggLayer_CompTick_Patch).GetMethod("CompTick")
         );
 
-
-        public static readonly FieldInfo eggProgress = AccessTools.Field(typeof(RimWorld.CompEggLayer), "eggProgress");
-        public static readonly MethodInfo Active = AccessTools.Method("RimWorld.CompEggLayer:get_Active");
-        public static readonly MethodInfo ProgressStoppedBecauseUnfertilized = AccessTools.Method("RimWorld.CompEggLayer:get_ProgressStoppedBecauseUnfertilized");
-
         // original rebuilded
         public static bool CompTick(CompEggLayer __instance)
         {
@@ -28,7 +23,7 @@ namespace WorkRebalancer.Patches
                 HostileHandler.HostileDetected)
                 return true;
 
-            if ((bool)Active.Invoke(__instance, null))
+            if (__instance.Active)
             {
                 float num = 1f / (__instance.Props.eggLayIntervalDays * 60000f);
                 Pawn pawn = __instance.parent as Pawn;
@@ -37,17 +32,16 @@ namespace WorkRebalancer.Patches
                     num *= PawnUtility.BodyResourceGrowthSpeed(pawn);
                 }
 
-                float _eggProgress = (float) eggProgress.GetValue(__instance);
-                _eggProgress += num * WorkRebalancerMod.Instance.Prof.EggLayerSpeedMult;
-                if (_eggProgress > 1f)
+                ref float eggProgress = ref __instance.eggProgress;
+                eggProgress += num * WorkRebalancerMod.Instance.Prof.EggLayerSpeedMult;
+                if (eggProgress > 1f)
                 {
-                    _eggProgress = 1f;
+                    eggProgress = 1f;
                 }
-                if ((bool)ProgressStoppedBecauseUnfertilized.Invoke(__instance, null))
+                if (__instance.ProgressStoppedBecauseUnfertilized)
                 {
-                    _eggProgress = __instance.Props.eggProgressUnfertilizedMax;
+                    eggProgress = __instance.Props.eggProgressUnfertilizedMax;
                 }
-                eggProgress.SetValue(__instance, _eggProgress);
             }
 
             return false;

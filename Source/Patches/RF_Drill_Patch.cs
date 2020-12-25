@@ -39,7 +39,7 @@ namespace WorkRebalancer.Patches
 	        Toil supervise = new Toil();
 	        supervise.tickAction = delegate()
 	        {
-		        LocalTargetInfo TargetA = Traverse.Create(__instance).Property("TargetA").GetValue<LocalTargetInfo>();
+		        LocalTargetInfo TargetA = jd.TargetA;
 		        jd.pawn.rotationTracker.FaceCell(TargetA.Thing.OccupiedRect().ClosestCellTo(jd.pawn.Position));
 		        Pawn actor = supervise.actor;
 		        actor.skills.Learn(SkillDefOf.Construction, 0.275f);
@@ -59,8 +59,7 @@ namespace WorkRebalancer.Patches
 			        }
 		        }
 
-		        bool flag = compOilDerrick != null;
-		        if (flag)
+		        if (compOilDerrick != null)
 		        {
 			        bool flag2 = !Traverse.Create(compOilDerrick).Property("WorkingNow").GetValue<bool>();
 			        if (flag2)

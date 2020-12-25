@@ -35,7 +35,7 @@ namespace WorkRebalancer.Patches
 	        yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 	        
             Toil repair = new Toil();
-	        Thing TargetThingA = Traverse.Create(__instance).Property("TargetThingA").GetValue<Thing>();
+	        Thing TargetThingA = __instance.TargetThingA;
 
 	        repair.initAction = () => TicksToNextRepair.SetValue(__instance, 80f);
 
