@@ -78,7 +78,7 @@ namespace WorkRebalancer.Patches
 
             var ageTracker = __instance.ageTracker;
             int multiplier; //How much the settings say the pawn's age speed should be multiplied by.
-            int biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
+            int biologicalYears = ageTracker.AgeBiologicalYears; // inlined function: __instance.ageTracker.AgeBiologicalYears
 
             //Determine multiplier
             if (__instance.RaceProps.Humanlike)
@@ -120,10 +120,14 @@ namespace WorkRebalancer.Patches
                 int age = biologicalYears;
 
                 //long nextBirthday = (int)(ageTracker.ageBiologicalTicksInt / 3600000L) + 3600000L;
-                ageTracker.ageBiologicalTicksInt += (multiplier - 1) * UpdateIntervalTick; // delayed add additional ticks
-                biologicalYears = (int)(ageTracker.ageBiologicalTicksInt / 3600000L); // inlined function: __instance.ageTracker.AgeBiologicalYears
 
-                if (Find.TickManager.TicksGame >= ageTracker.nextLifeStageChangeTick || biologicalYears != age) // vanilla code + if age changed recalc
+                // same as DebugMakeOlder method
+                var ticks = (multiplier - 1) * UpdateIntervalTick;
+                ageTracker.ageBiologicalTicksInt += ticks; // delayed add additional ticks
+                ageTracker.birthAbsTicksInt -= ticks;
+                biologicalYears = __instance.ageTracker.AgeBiologicalYears; // inlined function: __instance.ageTracker.AgeBiologicalYears
+
+                if (biologicalYears != age) // if age changed recalc
                     ageTracker.RecalculateLifeStageIndex();
                 if (biologicalYears != age)
                 {

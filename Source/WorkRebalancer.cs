@@ -329,9 +329,10 @@ namespace WorkRebalancer
                 100,
                 value => ValueValidator(value, 1, 100));
 
-            settingHandle.OnValueChanged = newVal =>
+            var _settingHandle = settingHandle;// CS1628
+            settingHandle.ValueChanged += newVal =>
             {
-                ApplySetting(newVal, customAction);
+                ApplySetting(_settingHandle.Value, customAction);
             };
 
             settingHandle.VisibilityPredicate = () => tabsHandler.Value == tabNames[(int) tabIndex];

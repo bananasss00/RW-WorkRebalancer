@@ -13,24 +13,22 @@ namespace WorkRebalancer.Patches
     {
         public static bool Apply(Harmony h)
         {
-            return h.PatchPrefix("rjw.Hediff_BasePregnancy:Tick", typeof(RJW_Hediff_BasePregnancy_Tick_Patch).GetMethod("Prefix"))
-                && h.PatchPostfix("rjw.Hediff_BasePregnancy:Tick", typeof(RJW_Hediff_BasePregnancy_Tick_Patch).GetMethod("Postfix"));
+            return h.PatchPrefix("rjw.Hediff_BasePregnancy:set_GestationProgress", typeof(RJW_Hediff_BasePregnancy_Tick_Patch).GetMethod("Prefix"));
         }
 
-        public static void Prefix(ref float ___progress_per_tick, ref float __state)
+        public static bool Prefix(HediffWithComps __instance, ref float ___p_start_tick, ref float ___p_end_tick)
         {
-            __state = ___progress_per_tick; // backup;
-
+            // Tick(): this.GestationProgress = (1f + (float)Find.TickManager.TicksGame - this.p_start_tick) / (this.p_end_tick - this.p_start_tick);
+            
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 HostileHandler.HostileDetected)
-                return;
+                return true;
 
-            ___progress_per_tick *= WorkRebalancerMod.Instance.Prof.RjwPregnancySpeedMult;
-        }
-
-        public static void Postfix(ref float ___progress_per_tick, float __state)
-        {
-            ___progress_per_tick = __state; // restore
+            float curTick = Find.TickManager.TicksGame;
+            float delta = ___p_end_tick - ___p_start_tick;
+            float newEndTick = ___p_start_tick + (delta / WorkRebalancerMod.Instance.Prof.RjwPregnancySpeedMult);
+            __instance.Severity = (1f + curTick - ___p_start_tick) / (newEndTick - ___p_start_tick);
+            return false;
         }
     }
 }

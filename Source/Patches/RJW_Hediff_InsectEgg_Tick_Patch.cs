@@ -13,19 +13,22 @@ namespace WorkRebalancer.Patches
     {
         public static bool Apply(Harmony h)
         {
-            return h.PatchPostfix("rjw.Hediff_InsectEgg:Tick", typeof(RJW_Hediff_InsectEgg_Tick_Patch).GetMethod("Postfix"));
+            return h.PatchPrefix("rjw.Hediff_InsectEgg:set_GestationProgress", typeof(RJW_Hediff_InsectEgg_Tick_Patch).GetMethod("Prefix"));
         }
 
-        public static void Postfix(ref int ___ageTicks)
+        public static bool Prefix(HediffWithComps __instance, ref float ___Gestation, ref float ___p_start_tick, ref float ___p_end_tick)
         {
+            // Tick(): this.GestationProgress = (1f + (float)Find.TickManager.TicksGame - this.p_start_tick) / (this.p_end_tick - this.p_start_tick);
+
             if (WorkRebalancerMod.Instance.Prof.RestoreWhenHostileDetected &&
                 HostileHandler.HostileDetected)
-                return;
+                return true;
 
-            if (WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult > 1)
-            {
-                ___ageTicks += WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult - 1; // sub - 1 bcs in orig. Tick() was added 1 tick
-            }
+            float curTick = Find.TickManager.TicksGame;
+            float delta = ___p_end_tick - ___p_start_tick;
+            float newEndTick = ___p_start_tick + (delta / WorkRebalancerMod.Instance.Prof.RjwInsectEggSpeedMult);
+            ___Gestation = (1f + curTick - ___p_start_tick) / (newEndTick - ___p_start_tick);
+            return false;
         }
     }
 }
