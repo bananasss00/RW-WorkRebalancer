@@ -1,4 +1,5 @@
 ﻿using System;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -6,6 +7,10 @@ namespace WorkRebalancer
 {
     public static class Utils
     {
+        private static bool? _ufActive = null;
+
+        public static bool UF_Active => _ufActive ??= AccessTools.TypeByName("UniversalFermenterSK.RecipeDef_UF") != null;
+
         [Obsolete]
         public static bool HostileExistsOnMaps()
         {

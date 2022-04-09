@@ -31,6 +31,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,6 +63,7 @@
     <Compile Include="HostileHandler.cs" />
     <Compile Include="IWorkAmount\PlantGrowDays.cs" />
     <Compile Include="IWorkAmount\PlantWorkAmount.cs" />
+    <Compile Include="IWorkAmount\RecipeUFWorkAmount.cs" />
     <Compile Include="IWorkAmount\ThingWorkAmount.cs" />
     <Compile Include="IWorkAmount\TerrainWorkAmount.cs" />
     <Compile Include="IWorkAmount\ResearchWorkAmount.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Patches\RF_Drill_Patch.cs" />
     <Compile Include="Patches\HSK_Extractors_Patch.cs" />
     <Compile Include="Patches\JobDriver_Repair.cs" />
+    <Compile Include="Patches\UniversalFermenterSK_DoTicks_Patch.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WorkRebalancer.cs" />
@@ -127,6 +130,10 @@
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>..\..\..\..\..\rw13_updating\#PACKAGES_1.3#\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UniversalFermenter_SK">
+      <HintPath>..\..\..\#PACKAGES_1.3#\UniversalFermenter_SK.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

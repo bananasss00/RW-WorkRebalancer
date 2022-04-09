@@ -186,6 +186,7 @@ namespace WorkRebalancer
             applyPatch("Arachnophobia_CompMultiHatcher_CompTick_Patch", Arachnophobia_CompMultiHatcher_CompTick_Patch.Apply(h));
             applyPatch("CompEggLayer_CompTick_Patch", CompEggLayer_CompTick_Patch.Apply(h));
             applyPatch("Breakdowns_Maintenance_Patch", FluffyBreakdownsPatched = Breakdowns_Maintenance_Patch.Apply(h));
+            // applyPatch("UniversalFermenterSK_DoTicks_Patch", UniversalFermenterSKPatched = UniversalFermenterSK_DoTicks_Patch.Apply(h));
         }
 
         public override string ModIdentifier => "WorkRebalancer";
@@ -486,6 +487,10 @@ namespace WorkRebalancer
             {
                 CreateCustomSetting(ref Prof.AndroidsCraftAddX, "AndroidsCraftAddX", 1, Tabs.generalTab);
             }
+            // if (UniversalFermenterSKPatched)
+            // {
+            //     CreateCustomSetting(ref Prof.UniversalFermenterSKAddX, "UniversalFermenterSKAddX", 0, Tabs.generalTab);
+            // }
 
             // otherTab //
             HugsLabelWtf("boostXpTitle", Tabs.otherTab);
@@ -569,7 +574,7 @@ namespace WorkRebalancer
             ApplySetting<ThingWorkAmount>(Prof.PercentOfBaseThingFactors, (w, p) => w.SetFactors(p));
             ApplySetting<PlantWorkAmount>(Prof.PercentOfBasePlantsWork);
             ApplySetting<PlantGrowDays>(Prof.PercentOfBasePlantsGrowDays);
-            //Loger.Save("dumpRebuilder.txt");
+            Loger.Save("dumpRebuilder.txt");
             SettingsApplied = true;
         }
 
@@ -580,6 +585,7 @@ namespace WorkRebalancer
 
         public SettingHandle<bool> DebugLog;
 
+        // public bool UniversalFermenterSKPatched { get; }
         public bool FluffyBreakdownsPatched { get; }
         public bool HSKExtractorsPatched { get; }
         public bool HSKCollectJobsPatched { get; }

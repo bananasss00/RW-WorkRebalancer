@@ -153,6 +153,7 @@ namespace WorkRebalancer
         public SettingHandle<int> RepairJobAddX;
         public SettingHandle<int> PercentOfBaseHSKCollectJobs;
         public SettingHandle<int> AndroidsCraftAddX;
+        // public SettingHandle<int> UniversalFermenterSKAddX;
         public SettingHandle<float> RAtomicsResearchMultiplier;  
         public SettingHandle<float> RFDrillJobMultiplier;  
         public SettingHandle<float> RFCrudeJobMultiplier;  
