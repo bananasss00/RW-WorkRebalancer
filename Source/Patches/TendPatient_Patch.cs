@@ -21,7 +21,7 @@ namespace WorkRebalancer.Patches
             // in dnSpy it's function MakeNewToils, but this real place!
             var makeNewToils = typeof(JobDriver_TendPatient)
                     .GetNestedTypes(AccessTools.all)?
-                    .FirstOrDefault(t => t.Name.Equals("<MakeNewToils>d__10"))?
+                    .FirstOrDefault(t => t.Name.Equals("<MakeNewToils>d__17"))?
                     .GetMethods(AccessTools.all)
                     .FirstOrDefault(m => m.Name.Equals("MoveNext"));
 
