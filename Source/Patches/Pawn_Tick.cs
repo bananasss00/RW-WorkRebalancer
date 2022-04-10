@@ -128,9 +128,9 @@ namespace WorkRebalancer.Patches
                 biologicalYears = __instance.ageTracker.AgeBiologicalYears; // inlined function: __instance.ageTracker.AgeBiologicalYears
 
                 if (biologicalYears != age) // if age changed recalc
-                    ageTracker.RecalculateLifeStageIndex();
-                if (biologicalYears != age)
                 {
+                    ageTracker.CalculateInitialGrowth();
+                    ageTracker.RecalculateLifeStageIndex();
                     ageTracker.BirthdayBiological();
                     //if (WorkRebalancerMod.Instance.DebugLog)
                     //    Log.Message($"[WorkRebalancer] {__instance.Label} BirthdayBiological {biologicalYears}y.o.");
