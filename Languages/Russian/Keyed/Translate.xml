@@ -126,6 +126,8 @@
 	<RjwPregnancySpeedMultDesc>Как быстро родит человека/животное/механоида</RjwPregnancySpeedMultDesc>
 	<RjwInsectEggSpeedMult>[*] [RJW] Как быстро родит(яйца)</RjwInsectEggSpeedMult>
 	<RjwInsectEggSpeedMultDesc>Как быстро родит яйца насекомых</RjwInsectEggSpeedMultDesc>
+	<PregnancySpeedMult>[*] Как быстро пешка родит</PregnancySpeedMult>
+	<PregnancySpeedMultDesc></PregnancySpeedMultDesc>
 	<EggHatchSpeedMult>[*] Как быстро яйцо вылупится</EggHatchSpeedMult>
 	<EggHatchSpeedMultDesc></EggHatchSpeedMultDesc>
 	<EggLayerSpeedMult>[*] Как быстро пешка снесет яйцо</EggLayerSpeedMult>

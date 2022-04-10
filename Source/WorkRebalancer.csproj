@@ -70,6 +70,7 @@
     <Compile Include="IWorkAmount\RecipeWorkAmount.cs" />
     <Compile Include="IWorkAmount\IWorkAmount.cs" />
     <Compile Include="Loger.cs" />
+    <Compile Include="Patches\Hediff_Pregnant_Patch.cs" />
     <Compile Include="Patches\Arachnophobia_CompMultiHatcher_CompTick_Patch.cs" />
     <Compile Include="Patches\JobDriver_WearApparel_Patch.cs" />
     <Compile Include="Patches\RimatomicsResearch_Patch.cs" />
@@ -113,6 +114,9 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\..\..\..\..\rw13_updating\#PACKAGES_1.3#\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="HaulExplicitly">
+      <HintPath>..\..\..\..\..\rw13_updating\#PACKAGES_1.3#\HaulExplicitly.dll</HintPath>
     </Reference>
     <Reference Include="HugsLib">
       <HintPath>..\..\..\..\..\rw13_updating\#PACKAGES_1.3#\HugsLib.dll</HintPath>

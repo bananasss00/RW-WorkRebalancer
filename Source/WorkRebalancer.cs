@@ -182,6 +182,7 @@ namespace WorkRebalancer
             applyPatch("Pawn_Tick_Patch", Pawn_Tick_Patch.Apply(h));
             applyPatch("RJW_Hediff_BasePregnancy_Tick_Patch", RjwPregnancyPatched = RJW_Hediff_BasePregnancy_Tick_Patch.Apply(h));
             applyPatch("RJW_Hediff_InsectEgg_Tick_Patch", RjwInsectEggPatched = RJW_Hediff_InsectEgg_Tick_Patch.Apply(h));
+            applyPatch("Hediff_Pregnant_Patch", Hediff_Pregnant_Patch.Apply(h));
             applyPatch("CompHatcher_CompTick_Patch", CompHatcher_CompTick_Patch.Apply(h));
             applyPatch("Arachnophobia_CompMultiHatcher_CompTick_Patch", Arachnophobia_CompMultiHatcher_CompTick_Patch.Apply(h));
             applyPatch("CompEggLayer_CompTick_Patch", CompEggLayer_CompTick_Patch.Apply(h));
@@ -510,6 +511,7 @@ namespace WorkRebalancer
 
             // pawnsTab //
             CreateWorkAmountSetting<PlantGrowDays>(ref Prof.PercentOfBasePlantsGrowDays, "PercentOfBasePlantsGrowDays", Tabs.pawnsTab);
+            CreateCustomSetting(ref Prof.PregnancySpeedMult, "PregnancySpeedMult", 1f, Tabs.pawnsTab);
             CreateCustomSetting(ref Prof.EggHatchSpeedMult, "EggHatchSpeedMult", 1f, Tabs.pawnsTab);
             CreateCustomSetting(ref Prof.EggLayerSpeedMult, "EggLayerSpeedMult", 1f, Tabs.pawnsTab);
             if (RjwPregnancyPatched)

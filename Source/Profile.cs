@@ -122,6 +122,7 @@ namespace WorkRebalancer
             AnimalCutoffAge?.ResetToDefault();
             RjwPregnancySpeedMult?.ResetToDefault();
             RjwInsectEggSpeedMult?.ResetToDefault();
+            PregnancySpeedMult?.ResetToDefault();
             EggHatchSpeedMult?.ResetToDefault();
             EggLayerSpeedMult?.ResetToDefault();
 
@@ -172,6 +173,7 @@ namespace WorkRebalancer
         public SettingHandle<int> AnimalCutoffAge; //Actual value of the animal cutoff age setting
         public SettingHandle<float> RjwPregnancySpeedMult;
         public SettingHandle<int> RjwInsectEggSpeedMult;
+        public SettingHandle<float> PregnancySpeedMult;
         public SettingHandle<float> EggHatchSpeedMult;
         public SettingHandle<float> EggLayerSpeedMult;
 

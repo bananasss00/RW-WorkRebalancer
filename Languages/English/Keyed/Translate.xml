@@ -126,6 +126,8 @@
 	<RjwPregnancySpeedMultDesc>How quickly a human/animal/mechanoid will give birth</RjwPregnancySpeedMultDesc>
 	<RjwInsectEggSpeedMult>[*] [RJW] How quickly will she give birth(eggs)</RjwInsectEggSpeedMult>
 	<RjwInsectEggSpeedMultDesc>How quickly will give birth to insect eggs</RjwInsectEggSpeedMultDesc>
+	<PregnancySpeedMult>[*] How fast will the pawn gestation progress</PregnancySpeedMult>
+	<PregnancySpeedMultDesc></PregnancySpeedMultDesc>
 	<EggHatchSpeedMult>[*] How fast will the egg hatch</EggHatchSpeedMult>
 	<EggHatchSpeedMultDesc></EggHatchSpeedMultDesc>
 	<EggLayerSpeedMult>[*] How fast will the pawn lay an egg</EggLayerSpeedMult>
